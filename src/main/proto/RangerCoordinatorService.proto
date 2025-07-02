@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "generated.grpc.rangercoordinatorservice";
+option java_outer_classname = "RangerCoordinatorServiceImpl";
+
+package RangerCoordinatorService;
+
+service RangerCoordinatorService {
+    // Bidirectional streaming: Real-time command/status exchange
+    rpc CoordinateRangers(stream RangerCommand) returns (stream RangerStatus);
+}
+
+message RangerCommand {
+    string ranger_id = 1;       // e.g. "RG-12"
+    CommandType action = 2;
+    double lon = 3;             // Required for action MOVE_TO
+    double lat = 4;             // Required for action MOVE_TO
+}
+
+message RangerStatus {
+    string ranger_id = 1;
+    StatusType status = 2;
+    double lon = 3;               // Longitude
+    double lat = 4;               // Latitude
+    repeated string findings = 5; // e.g. ["POACHER", "FIRE"]
+}
+
+enum CommandType {
+    MOVE_TO = 0;
+    SCAN_AREA = 1;
+    RETURN_BASE = 2;
+}
+
+enum StatusType {
+    IDLE = 0;
+    MOVING = 1;
+    SCANNING = 2;
+    IN_DANGER = 3;
+}

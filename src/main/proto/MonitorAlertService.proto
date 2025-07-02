@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "generated.grpc.monitoralertservice";
+option java_outer_classname = "MonitorAlertServiceImpl";
+
+package MonitorAlertService;
+
+service MonitorAlertService {
+    // Client-streaming: Sensors continuously send data
+    rpc StreamSensorData(stream SensorReading) returns (AverageData);
+    
+    // Unary: single request -> single response
+    rpc CheckFireRisk(AverageData) returns (FireAlert);
+}
+
+message SensorReading {
+    enum SensorType {
+        TEMPERATURE = 0;
+        HUMIDITY = 1;
+        CO2 = 2;
+    }
+    string sensor_id = 1;       // e.g. "TEMP-01"
+    SensorType type = 2;        // Type of measurement
+    float value = 3;            // Actual reading (32.4)
+}
+
+message AverageData {
+    float avg_temp = 1;         // Average temperature
+    float avg_humi = 2;         // Average humidity
+    float avg_co2 = 3;          // Average co2
+}
+
+message FireAlert {
+    enum RiskLevel {
+        SAFE = 0;
+        LOW = 1;
+        MODERATE = 2;
+        HIGH = 3;
+    }
+    RiskLevel level = 1;
+}

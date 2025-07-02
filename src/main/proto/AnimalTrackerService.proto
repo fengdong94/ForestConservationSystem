@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "generated.grpc.animaltrackerservice";
+option java_outer_classname = "AnimalTrackerServiceImpl";
+
+package AnimalTrackerService;
+
+service AnimalTrackerService {
+    // Server-streaming: Server pushes location updates
+    rpc StreamAnimalLocations(TrackingRequest) returns (stream LocationUpdate);
+}
+
+message TrackingRequest {
+    string animal_id = 1;       // e.g. "TIGER_123"
+    int32 update_interval = 2;  // Seconds between updates
+}
+
+message LocationUpdate {
+    double lon = 1;             // Longitude
+    double lat = 2;             // Latitude
+    string timestamp = 3;
+}
