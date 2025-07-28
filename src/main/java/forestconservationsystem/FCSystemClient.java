@@ -4,6 +4,7 @@
  */
 package forestconservationsystem;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +15,10 @@ import generated.grpc.monitoralertservice.SensorReading;
 import generated.grpc.monitoralertservice.SensorReading.SensorType;
 import generated.grpc.monitoralertservice.AverageData;
 import generated.grpc.monitoralertservice.FireAlert;
+import generated.grpc.animaltrackerservice.AnimalTrackerServiceGrpc;
+import generated.grpc.animaltrackerservice.AnimalTrackerServiceGrpc.AnimalTrackerServiceStub;
+import generated.grpc.animaltrackerservice.TrackingRequest;
+import generated.grpc.animaltrackerservice.LocationUpdate;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.grpc.ManagedChannel;
@@ -41,7 +46,7 @@ public class FCSystemClient {
         
         // TODO change to InetAddress.getLocalHost()
         // jmdns = JmDNS.create(InetAddress.getLocalHost());
-        InetAddress localAddr = InetAddress.getByName("10.13.229.190");
+        InetAddress localAddr = InetAddress.getByName("192.168.1.18");
         jmdns = JmDNS.create(localAddr);
         
         String serviceType = "_grpc._tcp.local.";
@@ -81,6 +86,7 @@ public class FCSystemClient {
                     // check that it is the specific service we want
                     if (serviceName.equals("ForestConservationSystem")) {
                         useMonitorAlertService(channel);
+                        useAnimalTrackerService(channel);
                     }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(FCSystemClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -94,14 +100,12 @@ public class FCSystemClient {
         System.out.println("#######Listening for gRPC services via JmDNS...");
         Thread.sleep(30000);
     }
-        
+    
     private static void useMonitorAlertService(ManagedChannel channel) throws InterruptedException, IOException {
-        // non-blocking stub for client streaming
-        MonitorAlertServiceStub asyncStub = MonitorAlertServiceGrpc.newStub(channel);
-
         /** Client Streaming
          * streaming sensor reading data to server and get average data
          */
+        MonitorAlertServiceStub asyncStub = MonitorAlertServiceGrpc.newStub(channel); // non-blocking stub for client streaming
         StreamObserver<AverageData> responseObserver = new StreamObserver<AverageData>() {
             /** TODO
              * NOTE that in client streaming we expect only one response from the server.So we should see
@@ -153,12 +157,10 @@ public class FCSystemClient {
             e.printStackTrace();
         }
         
-        // blocking stub for unary
-        MonitorAlertServiceBlockingStub blockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel);
-
         /** Unary
          * send average data to server and get fire risk level
          */
+        MonitorAlertServiceBlockingStub blockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel); // blocking stub for unary
         try {
             AverageData averageData = AverageData.newBuilder()
                     .setAvgTemp(19.5f)
@@ -170,10 +172,41 @@ public class FCSystemClient {
             System.out.println("####### Fire risk level: " + fireAlert.getLevel());
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-        } finally {
-            //shutdown channel
-            channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
-            jmdns.close();
         }
+    }
+    
+    private static void useAnimalTrackerService(ManagedChannel channel) throws InterruptedException, IOException {
+        /** Server Streaming
+         * server pushes location updates of a request animal
+         */
+        System.out.println("#######(\"#######(\"####### useAnimalTrackerService");
+        AnimalTrackerServiceStub asyncStub = AnimalTrackerServiceGrpc.newStub(channel); // non-blocking stub for server streaming
+        TrackingRequest trackingRequest = TrackingRequest.newBuilder()
+                .setAnimalId("TIGER_123")
+                .setUpdateInterval(2)
+                .build();
+
+        ArrayList<LocationUpdate> locationUpdates = new ArrayList<>();
+
+        StreamObserver<LocationUpdate> responseObserver = new StreamObserver<LocationUpdate> () {
+            @Override
+            public void onNext(LocationUpdate locationUpdate) {
+                System.out.println("Client received: " + locationUpdate.toString());
+                locationUpdates.add(locationUpdate);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                System.out.println("Error requesting: " + t.getLocalizedMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                // TODO ???
+                System.out.println("Client received onCompleted");
+            }
+        };
+
+        asyncStub.streamAnimalLocations(trackingRequest, responseObserver);
     }
 }

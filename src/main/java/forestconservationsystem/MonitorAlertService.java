@@ -34,8 +34,8 @@ public class MonitorAlertService extends MonitorAlertServiceImplBase {
             public void onError(Throwable t) {
                 // TODO Auto-generated method stub
             }
-         
-            // calculate the average
+            
+            // calculate the average for each SensorType
             @Override
             public void onCompleted() {
                 float sum_temp = 0, sum_humi = 0, sum_co2 = 0;
