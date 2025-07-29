@@ -5,7 +5,6 @@
 package forestconservationsystem;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import generated.grpc.monitoralertservice.MonitorAlertServiceGrpc;
@@ -19,7 +18,11 @@ import generated.grpc.animaltrackerservice.AnimalTrackerServiceGrpc;
 import generated.grpc.animaltrackerservice.AnimalTrackerServiceGrpc.AnimalTrackerServiceStub;
 import generated.grpc.animaltrackerservice.TrackingRequest;
 import generated.grpc.animaltrackerservice.LocationUpdate;
-import io.grpc.StatusRuntimeException;
+import generated.grpc.rangercoordinatorservice.RangerCoordinatorServiceGrpc;
+import generated.grpc.rangercoordinatorservice.RangerCoordinatorServiceGrpc.RangerCoordinatorServiceStub;
+import generated.grpc.rangercoordinatorservice.RangerCommand;
+import generated.grpc.rangercoordinatorservice.RangerStatus;
+import generated.grpc.rangercoordinatorservice.CommandType;
 import io.grpc.stub.StreamObserver;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -87,6 +90,7 @@ public class FCSystemClient {
                     if (serviceName.equals("ForestConservationSystem")) {
                         useMonitorAlertService(channel);
                         useAnimalTrackerService(channel);
+                        useRangerCoordinatorService(channel);
                     }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(FCSystemClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -114,7 +118,7 @@ public class FCSystemClient {
              */
             @Override
             public void onNext(AverageData averageData) {
-                System.out.println("response from server " + averageData.toString());
+                System.out.println("################### response from server " + averageData.toString());
             }
 
             @Override
@@ -124,62 +128,54 @@ public class FCSystemClient {
 
             @Override
             public void onCompleted() {
-                System.out.println("stream is completed.");
+                System.out.println("################## MonitorAlertService client stream is completed.");
             }
         };
         StreamObserver<SensorReading> requestObserver = asyncStub.streamSensorData(responseObserver);
-        try {
-            // TEMPERATURE
-            requestObserver.onNext(SensorReading.newBuilder().setSensorId("TEMP-01").setType(SensorType.TEMPERATURE).setValue(19).build());
-            // here the client sleeps for a bit between each request to slow things down so we can see whats happening
-            Thread.sleep(500);
-            requestObserver.onNext(SensorReading.newBuilder().setSensorId("TEMP-02").setType(SensorType.TEMPERATURE).setValue(20).build());
-            Thread.sleep(500);
 
-            // HUMIDITY
-            requestObserver.onNext(SensorReading.newBuilder().setSensorId("HUMI-01").setType(SensorType.HUMIDITY).setValue(70).build());
-            Thread.sleep(500);
-            requestObserver.onNext(SensorReading.newBuilder().setSensorId("HUMI-02").setType(SensorType.HUMIDITY).setValue(72).build());
-            Thread.sleep(500);
+        // TEMPERATURE
+        requestObserver.onNext(SensorReading.newBuilder().setSensorId("TEMP-01").setType(SensorType.TEMPERATURE).setValue(19).build());
+        // here the client sleeps for a bit between each request to slow things down so we can see whats happening
+        Thread.sleep(500);
+        requestObserver.onNext(SensorReading.newBuilder().setSensorId("TEMP-02").setType(SensorType.TEMPERATURE).setValue(20).build());
+        Thread.sleep(500);
 
-            // CO2
-            requestObserver.onNext(SensorReading.newBuilder().setSensorId("CO2-01").setType(SensorType.CO2).setValue(400).build());
-            Thread.sleep(500);
-            requestObserver.onNext(SensorReading.newBuilder().setSensorId("CO2-02").setType(SensorType.CO2).setValue(420).build());
-            Thread.sleep(500);
+        // HUMIDITY
+        requestObserver.onNext(SensorReading.newBuilder().setSensorId("HUMI-01").setType(SensorType.HUMIDITY).setValue(70).build());
+        Thread.sleep(500);
+        requestObserver.onNext(SensorReading.newBuilder().setSensorId("HUMI-02").setType(SensorType.HUMIDITY).setValue(72).build());
+        Thread.sleep(500);
 
-            requestObserver.onCompleted();
-            // if the client sleeps now then it will see the server response when it wakes
-            Thread.sleep(10000);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {			
-            e.printStackTrace();
-        }
+        // CO2
+        requestObserver.onNext(SensorReading.newBuilder().setSensorId("CO2-01").setType(SensorType.CO2).setValue(400).build());
+        Thread.sleep(500);
+        requestObserver.onNext(SensorReading.newBuilder().setSensorId("CO2-02").setType(SensorType.CO2).setValue(420).build());
+        Thread.sleep(500);
+
+        requestObserver.onCompleted();
+        // if the client sleeps now then it will see the server response when it wakes
+        Thread.sleep(10000);
+
         
         /** Unary
          * send average data to server and get fire risk level
          */
         MonitorAlertServiceBlockingStub blockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel); // blocking stub for unary
-        try {
-            AverageData averageData = AverageData.newBuilder()
-                    .setAvgTemp(19.5f)
-                    .setAvgHumi(71)
-                    .setAvgCo2(410)
-                    .build();
+        
+        AverageData averageData = AverageData.newBuilder()
+                .setAvgTemp(19.5f)
+                .setAvgHumi(71)
+                .setAvgCo2(410)
+                .build();
 
-            FireAlert fireAlert = blockingStub.checkFireRisk(averageData);
-            System.out.println("####### Fire risk level: " + fireAlert.getLevel());
-        } catch (StatusRuntimeException e) {
-            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-        }
+        FireAlert fireAlert = blockingStub.checkFireRisk(averageData);
+        System.out.println("############# Fire risk level: " + fireAlert.getLevel());
     }
     
     private static void useAnimalTrackerService(ManagedChannel channel) throws InterruptedException, IOException {
         /** Server Streaming
          * server pushes location updates of a request animal
          */
-        System.out.println("#######(\"#######(\"####### useAnimalTrackerService");
         AnimalTrackerServiceStub asyncStub = AnimalTrackerServiceGrpc.newStub(channel); // non-blocking stub for server streaming
         TrackingRequest trackingRequest = TrackingRequest.newBuilder()
                 .setAnimalId("TIGER_123")
@@ -191,22 +187,68 @@ public class FCSystemClient {
         StreamObserver<LocationUpdate> responseObserver = new StreamObserver<LocationUpdate> () {
             @Override
             public void onNext(LocationUpdate locationUpdate) {
-                System.out.println("Client received: " + locationUpdate.toString());
+                System.out.println("################## Client received locationUpdates: " + locationUpdate.toString());
                 locationUpdates.add(locationUpdate);
             }
 
             @Override
             public void onError(Throwable t) {
-                System.out.println("Error requesting: " + t.getLocalizedMessage());
+                System.out.println("#################### Error requesting: " + t.getLocalizedMessage());
             }
 
             @Override
             public void onCompleted() {
                 // TODO ???
-                System.out.println("Client received onCompleted");
+                System.out.println("################## AnimalTrackerService Client received onCompleted");
             }
         };
 
         asyncStub.streamAnimalLocations(trackingRequest, responseObserver);
+    }
+    
+    private static void useRangerCoordinatorService(ManagedChannel channel) throws InterruptedException, IOException {
+        /** Bi-directional Streaming
+         * Real-time command/status exchange
+         */
+        
+        RangerCoordinatorServiceStub asyncStub = RangerCoordinatorServiceGrpc.newStub(channel); // non-blocking stub for bi-directional streaming
+        
+        StreamObserver<RangerStatus> responseObserver = new StreamObserver<RangerStatus>() {
+            @Override
+            public void onNext(RangerStatus rangerStatus) {
+                System.out.println("############## client received rangerStatus ranger_id: " + rangerStatus.getRangerId() + " status: " + rangerStatus.getStatus() + " findings: " + rangerStatus.getFindingsList());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                t.printStackTrace();
+            }
+
+            @Override
+            public void onCompleted() {
+                System.out.println("############# receiving rangerStatus completed ");
+            }
+        };
+        
+        StreamObserver<RangerCommand> requestObserver = asyncStub.coordinateRangers(responseObserver);
+        
+        try {
+            requestObserver.onNext(RangerCommand.newBuilder().setRangerId("RG-11").setAction(CommandType.SCAN_AREA).build());
+            Thread.sleep(500);
+            requestObserver.onNext(RangerCommand.newBuilder().setRangerId("RG-12").setAction(CommandType.SCAN_AREA).build());
+            Thread.sleep(500);
+            requestObserver.onNext(RangerCommand.newBuilder().setRangerId("RG-13").setAction(CommandType.SCAN_AREA).build());
+            Thread.sleep(500);
+            requestObserver.onNext(RangerCommand.newBuilder().setRangerId("RG-14").setAction(CommandType.SCAN_AREA).build());
+            Thread.sleep(500);
+            requestObserver.onCompleted();
+            // if the client sleeps now then it will see the server response when it wakes
+            Thread.sleep(10000);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {			
+            e.printStackTrace();
+        }
+
     }
 }

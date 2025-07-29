@@ -20,6 +20,7 @@ public class FCSystemServer {
     public static void main(String[] args) {
         MonitorAlertService monitorAlertService = new MonitorAlertService();
         AnimalTrackerService animalTrackerService = new AnimalTrackerService();
+        RangerCoordinatorService rangerCoordinatorService = new RangerCoordinatorService();
 
         Logger.getLogger("io.grpc.netty").setLevel(Level.SEVERE);
         Logger.getLogger("io.grpc.netty.shaded").setLevel(Level.SEVERE);
@@ -32,6 +33,7 @@ public class FCSystemServer {
             Server server = ServerBuilder.forPort(port)
                     .addService(monitorAlertService)
                     .addService(animalTrackerService)
+                    .addService(rangerCoordinatorService)
                     .build()
                     .start();
 
