@@ -40,87 +40,125 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
+              <EmptySpace min="20" pref="20" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane1" alignment="0" min="-2" pref="645" max="-2" attributes="0"/>
-                          <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="clientStreamingStreamSensorDataLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="prepareClientStreamButton" min="-2" max="-2" attributes="0"/>
-                                  <Component id="MonitorAlertServiceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="sensorIdLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="sensorIdTextField" min="-2" pref="82" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="sensorTypeComboBox" min="-2" pref="120" max="-2" attributes="0"/>
-                                  <Component id="sensorTypeLabel" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace pref="46" max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="valueTextField" min="-2" pref="82" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
-                                      <Component id="sendButton" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="valueLabel" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                      </Group>
-                      <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                      <Component id="rangerCoordinatorServiceLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="unaryCheckFireRiskLabel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="avgTempTextField" min="-2" pref="82" max="-2" attributes="0"/>
-                                  <Component id="averageTemperatureLabel" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Component id="animalTrackerServiceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="animalIdLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="averageHumidityLabel" min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="animalIdTextField" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="avgHumiTextField" alignment="0" pref="82" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Group type="102" attributes="0">
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="clientStreamingStreamSensorDataLabel" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="prepareClientStreamButton" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="MonitorAlertServiceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="sensorIdLabel" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="sensorIdTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="unaryCheckFireRiskLabel" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="32767" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="avgTempTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                                  <Component id="averageTemperatureLabel" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="sensorTypeComboBox" min="-2" pref="120" max="-2" attributes="0"/>
+                                          <Component id="sensorTypeLabel" min="-2" max="-2" attributes="0"/>
+                                          <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                                              <Component id="avgHumiTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                              <Component id="averageHumidityLabel" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="valueTextField" alignment="0" min="-2" pref="82" max="-2" attributes="0"/>
+                                          <Component id="valueLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="averageCO2Label" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="avgCo2TextField" alignment="0" min="-2" pref="82" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="biDiStreamingCoordinateRangersLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="prepareBidiStreamButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="rangerIdTextField" alignment="0" min="-2" pref="80" max="-2" attributes="0"/>
+                                          <Component id="rangerIdLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="actionLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="actionComboBox" min="-2" pref="97" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="separate" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="longitudeTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                          <Component id="longitudeLabel" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="latitudeLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="latitudeTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="animalTrackerServiceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="111" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="animalIdLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="animalIdTextField" min="-2" pref="119" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="updateIntervalLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="updateIntervalTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="avgCo2TextField" min="-2" pref="82" max="-2" attributes="0"/>
-                                  <Component id="averageCO2Label" min="-2" max="-2" attributes="0"/>
-                                  <Component id="updateIntervalLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="updateIntervalTextField" alignment="0" min="-2" pref="82" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="coordinateButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                                      <Component id="doneButton" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="sendButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="checkFireRiskButton" min="-2" max="-2" attributes="0"/>
+                                          <Component id="getAverageButton" min="-2" max="-2" attributes="0"/>
+                                          <Component id="trackButton" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
                               </Group>
-                              <EmptySpace min="-2" pref="116" max="-2" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace min="22" pref="22" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="checkFireRiskButton" min="-2" max="-2" attributes="0"/>
-                  <Component id="getAverageButton" min="-2" max="-2" attributes="0"/>
-                  <Component id="trackButton" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -146,44 +184,57 @@
                   <Component id="prepareClientStreamButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="averageCO2Label" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="averageHumidityLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="averageTemperatureLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="avgCo2TextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="checkFireRiskButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="avgHumiTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="avgTempTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                      <Component id="unaryCheckFireRiskLabel" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="averageCO2Label" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="averageHumidityLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="averageTemperatureLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="unaryCheckFireRiskLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="avgCo2TextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="checkFireRiskButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="avgTempTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="avgHumiTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
               <Component id="animalTrackerServiceLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="updateIntervalLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="animalIdLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="updateIntervalLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="updateIntervalTextField" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="animalIdTextField" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="trackButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="animalIdTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="updateIntervalTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="205" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+              <Component id="rangerCoordinatorServiceLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="biDiStreamingCoordinateRangersLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="rangerIdLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="actionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="longitudeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="latitudeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="prepareBidiStreamButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="rangerIdTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="longitudeTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="latitudeTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="actionComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="coordinateButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="doneButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
               <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="135" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="259" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -192,6 +243,9 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="MonitorAlertServiceLabel">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Helvetica Neue" size="18" style="0"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Monitor Alert Service"/>
       </Properties>
     </Component>
@@ -349,6 +403,9 @@
     </Component>
     <Component class="javax.swing.JLabel" name="animalTrackerServiceLabel">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Helvetica Neue" size="18" style="0"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Animal Tracker Service"/>
       </Properties>
     </Component>
@@ -389,6 +446,92 @@
     <Component class="javax.swing.JTextField" name="animalIdTextField">
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="animalIdTextFieldActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="rangerCoordinatorServiceLabel">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Helvetica Neue" size="18" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="RangerCoordinatorService"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="biDiStreamingCoordinateRangersLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="BiDi Streaming - CoordinateRangers"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="prepareBidiStreamButton">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="0" green="cc" red="ff" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Prepare BiDi Stream"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="prepareBidiStreamButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="rangerIdLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Ranger ID"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="rangerIdTextField">
+    </Component>
+    <Component class="javax.swing.JLabel" name="actionLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Action"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="longitudeTextField">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="longitudeTextFieldActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="longitudeLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Longitude"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="latitudeLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Latitude"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="latitudeTextField">
+    </Component>
+    <Component class="javax.swing.JComboBox" name="actionComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new javax.swing.DefaultComboBoxModel&lt;&gt;(new String[] { &quot;MOVE_TO&quot;, &quot;SCAN_AREA&quot;, &quot;RETURN BASE&quot; })" type="code"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="actionComboBox.setSelectedIndex(0);"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JButton" name="coordinateButton">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="cc" red="33" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Coordinate"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="coordinateButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="doneButton">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="0" green="cc" red="66" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Done"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="doneButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

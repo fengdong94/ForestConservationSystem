@@ -13,14 +13,17 @@ import generated.grpc.monitoralertservice.SensorReading;
 import generated.grpc.monitoralertservice.SensorReading.SensorType;
 import generated.grpc.monitoralertservice.AverageData;
 import generated.grpc.animaltrackerservice.LocationUpdate;
-
+import generated.grpc.rangercoordinatorservice.RangerCommand;
+import generated.grpc.rangercoordinatorservice.CommandType;
+import generated.grpc.rangercoordinatorservice.RangerStatus;
 /**
  *
- * @author fred
+ * @author Dong
  */
 public class FCSystemGUI extends javax.swing.JFrame {
     FCSystemClient1 fcSystemClient;
     StreamObserver<SensorReading> streamSensorDataRequestObserver;
+    StreamObserver<RangerCommand> coordinateRangersRequestObserver;
 
     /**
      * Creates new form FCSystemGUI
@@ -29,8 +32,17 @@ public class FCSystemGUI extends javax.swing.JFrame {
     public FCSystemGUI() throws Exception {
         initComponents();
         fcSystemClient = new FCSystemClient1();
+        sensorIdTextField.setEditable(false);
+        sensorTypeComboBox.setEditable(false);
+        valueTextField.setEditable(false);
         sendButton.setVisible(false);
         getAverageButton.setVisible(false);
+        rangerIdTextField.setEditable(false);
+        actionComboBox.setEditable(false);
+        longitudeTextField.setEditable(false);
+        latitudeTextField.setEditable(false);
+        coordinateButton.setVisible(false);
+        doneButton.setVisible(false);
     }
 
     /**
@@ -74,6 +86,19 @@ public class FCSystemGUI extends javax.swing.JFrame {
         updateIntervalLabel = new javax.swing.JLabel();
         updateIntervalTextField = new javax.swing.JTextField();
         animalIdTextField = new javax.swing.JTextField();
+        rangerCoordinatorServiceLabel = new javax.swing.JLabel();
+        biDiStreamingCoordinateRangersLabel = new javax.swing.JLabel();
+        prepareBidiStreamButton = new javax.swing.JButton();
+        rangerIdLabel = new javax.swing.JLabel();
+        rangerIdTextField = new javax.swing.JTextField();
+        actionLabel = new javax.swing.JLabel();
+        longitudeTextField = new javax.swing.JTextField();
+        longitudeLabel = new javax.swing.JLabel();
+        latitudeLabel = new javax.swing.JLabel();
+        latitudeTextField = new javax.swing.JTextField();
+        actionComboBox = new javax.swing.JComboBox<>();
+        coordinateButton = new javax.swing.JButton();
+        doneButton = new javax.swing.JButton();
 
         jLabel2.setText("jLabel2");
 
@@ -83,6 +108,7 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        MonitorAlertServiceLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         MonitorAlertServiceLabel.setText("Monitor Alert Service");
 
         unaryCheckFireRiskLabel.setText("Unary - CheckFireRisk");
@@ -176,6 +202,7 @@ public class FCSystemGUI extends javax.swing.JFrame {
             }
         });
 
+        animalTrackerServiceLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         animalTrackerServiceLabel.setText("Animal Tracker Service");
 
         jLabel1.setText("Server Streaming - StreamAnimalLocations");
@@ -205,71 +232,145 @@ public class FCSystemGUI extends javax.swing.JFrame {
             }
         });
 
+        rangerCoordinatorServiceLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        rangerCoordinatorServiceLabel.setText("RangerCoordinatorService");
+
+        biDiStreamingCoordinateRangersLabel.setText("BiDi Streaming - CoordinateRangers");
+
+        prepareBidiStreamButton.setBackground(new java.awt.Color(255, 204, 0));
+        prepareBidiStreamButton.setText("Prepare BiDi Stream");
+        prepareBidiStreamButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                prepareBidiStreamButtonActionPerformed(evt);
+            }
+        });
+
+        rangerIdLabel.setText("Ranger ID");
+
+        actionLabel.setText("Action");
+
+        longitudeTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                longitudeTextFieldActionPerformed(evt);
+            }
+        });
+
+        longitudeLabel.setText("Longitude");
+
+        latitudeLabel.setText("Latitude");
+
+        actionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MOVE_TO", "SCAN_AREA", "RETURN BASE" }));
+        actionComboBox.setSelectedIndex(0);
+
+        coordinateButton.setBackground(new java.awt.Color(51, 204, 255));
+        coordinateButton.setText("Coordinate");
+        coordinateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                coordinateButtonActionPerformed(evt);
+            }
+        });
+
+        doneButton.setBackground(new java.awt.Color(102, 204, 0));
+        doneButton.setText("Done");
+        doneButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doneButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(clientStreamingStreamSensorDataLabel)
-                                    .addComponent(prepareClientStreamButton)
-                                    .addComponent(MonitorAlertServiceLabel))
-                                .addGap(49, 49, 49)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(sensorIdLabel)
-                                    .addComponent(sensorIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(45, 45, 45)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(sensorTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(sensorTypeLabel))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(valueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(57, 57, 57)
-                                        .addComponent(sendButton))
-                                    .addComponent(valueLabel))))
-                        .addGap(25, 25, 25))
+                        .addComponent(rangerCoordinatorServiceLabel)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(unaryCheckFireRiskLabel)
-                                .addGap(41, 41, 41)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(avgTempTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(averageTemperatureLabel)))
-                            .addComponent(animalTrackerServiceLabel)
-                            .addComponent(jLabel1))
-                        .addGap(90, 90, 90)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(animalIdLabel)
-                                    .addComponent(averageHumidityLabel)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(animalIdTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(avgHumiTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(clientStreamingStreamSensorDataLabel)
+                                                    .addComponent(prepareClientStreamButton)
+                                                    .addComponent(MonitorAlertServiceLabel))
+                                                .addGap(49, 49, 49)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(sensorIdLabel)
+                                                    .addComponent(sensorIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(45, 45, 45))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(unaryCheckFireRiskLabel)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(avgTempTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(averageTemperatureLabel))
+                                                .addGap(18, 18, 18)))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(sensorTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(sensorTypeLabel)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(avgHumiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(averageHumidityLabel)))
+                                        .addGap(51, 51, 51)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(valueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(valueLabel)
+                                            .addComponent(averageCO2Label)
+                                            .addComponent(avgCo2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jLabel10)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(biDiStreamingCoordinateRangersLabel)
+                                            .addComponent(prepareBidiStreamButton))
+                                        .addGap(60, 60, 60)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(rangerIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(rangerIdLabel))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(actionLabel)
+                                            .addComponent(actionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(18, 18, Short.MAX_VALUE)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(longitudeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(longitudeLabel))
+                                        .addGap(14, 14, 14)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(latitudeLabel)
+                                            .addComponent(latitudeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(animalTrackerServiceLabel)
+                                            .addComponent(jLabel1))
+                                        .addGap(111, 111, 111)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(animalIdLabel)
+                                            .addComponent(animalIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(58, 58, 58)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(updateIntervalLabel)
+                                            .addComponent(updateIntervalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(31, 31, 31)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(avgCo2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(averageCO2Label)
-                                    .addComponent(updateIntervalLabel)
-                                    .addComponent(updateIntervalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(116, 116, 116)))))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(checkFireRiskButton)
-                    .addComponent(getAverageButton)
-                    .addComponent(trackButton))
-                .addGap(22, 22, 22))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(coordinateButton)
+                                        .addGap(35, 35, 35)
+                                        .addComponent(doneButton))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(sendButton)
+                                        .addGap(25, 25, 25)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(checkFireRiskButton)
+                                            .addComponent(getAverageButton)
+                                            .addComponent(trackButton))))))
+                        .addGap(22, 22, 22))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -291,37 +392,51 @@ public class FCSystemGUI extends javax.swing.JFrame {
                     .addComponent(getAverageButton)
                     .addComponent(prepareClientStreamButton))
                 .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(averageCO2Label)
-                            .addComponent(averageHumidityLabel)
-                            .addComponent(averageTemperatureLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(avgCo2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(checkFireRiskButton)
-                            .addComponent(avgHumiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(avgTempTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(unaryCheckFireRiskLabel)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(averageCO2Label)
+                    .addComponent(averageHumidityLabel)
+                    .addComponent(averageTemperatureLabel)
+                    .addComponent(unaryCheckFireRiskLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(avgCo2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkFireRiskButton)
+                    .addComponent(avgTempTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(avgHumiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37)
                 .addComponent(animalTrackerServiceLabel)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(updateIntervalLabel)
                     .addComponent(animalIdLabel)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(updateIntervalLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(updateIntervalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(trackButton)
                     .addComponent(animalIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(trackButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 205, Short.MAX_VALUE)
+                    .addComponent(updateIntervalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addComponent(rangerCoordinatorServiceLabel)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(biDiStreamingCoordinateRangersLabel)
+                    .addComponent(rangerIdLabel)
+                    .addComponent(actionLabel)
+                    .addComponent(longitudeLabel)
+                    .addComponent(latitudeLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(prepareBidiStreamButton)
+                    .addComponent(rangerIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(longitudeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(latitudeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(actionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(coordinateButton)
+                    .addComponent(doneButton))
+                .addGap(51, 51, 51)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -392,10 +507,13 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
     private void prepareClientStreamButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prepareClientStreamButtonActionPerformed
         StreamObserver<AverageData> responseObserver = new StreamObserver<AverageData>() {
+            StringBuffer resultString = new StringBuffer();
+            
             @Override
             public void onNext(AverageData averageData) {
-                System.out.println("################### streamSensorData response from server " + averageData.toString());
-                resultTextArea.setText(averageData.toString());
+                resultString.append(averageData.toString());
+                resultString.append("\n");
+                resultTextArea.setText(resultString.toString());
             }
 
             @Override
@@ -405,21 +523,29 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
             @Override
             public void onCompleted() {
-                System.out.println("################## streamSensorData client stream is completed.");
+                resultString.append("StreamSensorData client stream is completed.");
+                resultTextArea.setText(resultString.toString());
                 sendButton.setVisible(false);
                 getAverageButton.setVisible(false);
             }
         };
         
-        
         streamSensorDataRequestObserver = fcSystemClient.streamSensorData(responseObserver);
-        resultTextArea.setText("Ready to accept values for streamSensorData service");
+        resultTextArea.setText("Ready to accept values for MonitorAlertService");
+        sensorIdTextField.setEditable(true);
+        sensorTypeComboBox.setEditable(true);
+        valueTextField.setEditable(true);
         sendButton.setVisible(true);
         getAverageButton.setVisible(true);
     }//GEN-LAST:event_prepareClientStreamButtonActionPerformed
 
     private void getAverageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getAverageButtonActionPerformed
         streamSensorDataRequestObserver.onCompleted();
+        sensorIdTextField.setEditable(false);
+        sensorTypeComboBox.setEditable(false);
+        valueTextField.setEditable(false);
+        sendButton.setVisible(false);
+        getAverageButton.setVisible(false);
     }//GEN-LAST:event_getAverageButtonActionPerformed
 
     private void sensorIdTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sensorIdTextFieldActionPerformed
@@ -435,14 +561,12 @@ public class FCSystemGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "please enter a valid numer for Update Interval");
         }
         
-        StringBuffer resultString = new StringBuffer();
-        
         StreamObserver<LocationUpdate> responseObserver = new StreamObserver<LocationUpdate> () {
+            StringBuffer resultString = new StringBuffer();
             int count = 0;
             
             @Override
             public void onNext(LocationUpdate locationUpdate) {
-                System.out.println("################## Client received locationUpdates: " + locationUpdate.toString());
                 resultString.append(locationUpdate.toString());
                 resultString.append("\n");
                 resultTextArea.setText(resultString.toString());
@@ -456,7 +580,9 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
             @Override
             public void onCompleted() {
-                System.out.println("################## AnimalTrackerService stream is completed ... received " + count + " rand updates");
+                String ending = "StreamAnimalLocations is completed ... received " + count + " locationUpdates";
+                resultString.append(ending);
+                resultTextArea.setText(resultString.toString());
             }
         };
         
@@ -470,6 +596,86 @@ public class FCSystemGUI extends javax.swing.JFrame {
     private void animalIdTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animalIdTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_animalIdTextFieldActionPerformed
+
+    private void longitudeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_longitudeTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_longitudeTextFieldActionPerformed
+
+    private void coordinateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coordinateButtonActionPerformed
+        String rangerId = rangerIdTextField.getText().trim();
+        String actionName = (String) actionComboBox.getSelectedItem();
+        CommandType action = CommandType.valueOf(actionName);
+        
+//        TODO
+//        float longitude, latitude;
+//        try {
+//            longitude = Float.parseFloat(longitudeTextField.getText().trim());
+//            latitude = Float.parseFloat(latitudeTextField.getText().trim());
+//        } catch (NumberFormatException e) {
+//            JOptionPane.showMessageDialog(null, "please enter a valid numer for Value");
+//        }
+        
+        RangerCommand rangerCommand = RangerCommand.newBuilder()
+                .setRangerId(rangerId)
+                .setAction(action)
+//                TODO
+//                .setLon(longitude)
+//                .setLat(latitude)
+                .build();
+        
+        coordinateRangersRequestObserver.onNext(rangerCommand);
+    }//GEN-LAST:event_coordinateButtonActionPerformed
+
+    private void prepareBidiStreamButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prepareBidiStreamButtonActionPerformed
+        StreamObserver<RangerStatus> responseObserver = new StreamObserver<RangerStatus> () {
+            StringBuffer resultString = new StringBuffer();
+            int count = 0;
+            
+            @Override
+            public void onNext(RangerStatus rangerStatus) {
+                resultString.append(rangerStatus.toString());
+                resultString.append("\n");
+                resultTextArea.setText(resultString.toString());
+                count++;
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                t.printStackTrace();
+            }
+
+            @Override
+            public void onCompleted() {
+                String ending = "CoordinateRangers is completed ... received " + count + " rangerStatus";
+                resultString.append(ending);
+                resultTextArea.setText(resultString.toString());
+            }
+        };
+        
+        try {
+            coordinateRangersRequestObserver = fcSystemClient.coordinateRangers(responseObserver);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(FCSystemGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        resultTextArea.setText("Ready to accept values for RangerCoordinatorService");
+        rangerIdTextField.setEditable(true);
+        actionComboBox.setEditable(true);
+        longitudeTextField.setEditable(true);
+        latitudeTextField.setEditable(true);
+        coordinateButton.setVisible(true);
+        doneButton.setVisible(true);
+    }//GEN-LAST:event_prepareBidiStreamButtonActionPerformed
+
+    private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
+        coordinateRangersRequestObserver.onCompleted();
+        rangerIdTextField.setEditable(false);
+        actionComboBox.setEditable(false);
+        longitudeTextField.setEditable(false);
+        latitudeTextField.setEditable(false);
+        coordinateButton.setVisible(false);
+        doneButton.setVisible(false);
+    }//GEN-LAST:event_doneButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -512,6 +718,8 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel MonitorAlertServiceLabel;
+    private javax.swing.JComboBox<String> actionComboBox;
+    private javax.swing.JLabel actionLabel;
     private javax.swing.JLabel animalIdLabel;
     private javax.swing.JTextField animalIdTextField;
     private javax.swing.JLabel animalTrackerServiceLabel;
@@ -521,8 +729,11 @@ public class FCSystemGUI extends javax.swing.JFrame {
     private javax.swing.JTextField avgCo2TextField;
     private javax.swing.JTextField avgHumiTextField;
     private javax.swing.JTextField avgTempTextField;
+    private javax.swing.JLabel biDiStreamingCoordinateRangersLabel;
     private javax.swing.JButton checkFireRiskButton;
     private javax.swing.JLabel clientStreamingStreamSensorDataLabel;
+    private javax.swing.JButton coordinateButton;
+    private javax.swing.JButton doneButton;
     private javax.swing.JButton getAverageButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -530,7 +741,15 @@ public class FCSystemGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel latitudeLabel;
+    private javax.swing.JTextField latitudeTextField;
+    private javax.swing.JLabel longitudeLabel;
+    private javax.swing.JTextField longitudeTextField;
+    private javax.swing.JButton prepareBidiStreamButton;
     private javax.swing.JButton prepareClientStreamButton;
+    private javax.swing.JLabel rangerCoordinatorServiceLabel;
+    private javax.swing.JLabel rangerIdLabel;
+    private javax.swing.JTextField rangerIdTextField;
     private javax.swing.JTextArea resultTextArea;
     private javax.swing.JButton sendButton;
     private javax.swing.JLabel sensorIdLabel;

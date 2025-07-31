@@ -4,13 +4,11 @@
  */
 package forestconservationsystem;
 
-import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import generated.grpc.monitoralertservice.MonitorAlertServiceGrpc;
 import generated.grpc.monitoralertservice.MonitorAlertServiceGrpc.MonitorAlertServiceStub;
 import generated.grpc.monitoralertservice.MonitorAlertServiceGrpc.MonitorAlertServiceBlockingStub;
 import generated.grpc.monitoralertservice.SensorReading;
-import generated.grpc.monitoralertservice.SensorReading.SensorType;
 import generated.grpc.monitoralertservice.AverageData;
 import generated.grpc.monitoralertservice.FireAlert;
 import generated.grpc.animaltrackerservice.AnimalTrackerServiceGrpc;
@@ -21,11 +19,9 @@ import generated.grpc.rangercoordinatorservice.RangerCoordinatorServiceGrpc;
 import generated.grpc.rangercoordinatorservice.RangerCoordinatorServiceGrpc.RangerCoordinatorServiceStub;
 import generated.grpc.rangercoordinatorservice.RangerCommand;
 import generated.grpc.rangercoordinatorservice.RangerStatus;
-import generated.grpc.rangercoordinatorservice.CommandType;
 import io.grpc.stub.StreamObserver;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import java.io.IOException;
 import java.net.InetAddress;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
@@ -41,6 +37,7 @@ public class FCSystemClient1 {
     private static MonitorAlertServiceStub monitorAlertServiceStub;
     private static MonitorAlertServiceBlockingStub monitorAlertServiceBlockingStub;
     private static AnimalTrackerServiceStub animalTrackerServiceStub;
+    private static RangerCoordinatorServiceStub rangerCoordinatorServiceStub;
     private static CountDownLatch latch = new CountDownLatch(1);
     
     /**
@@ -92,6 +89,7 @@ public class FCSystemClient1 {
                     monitorAlertServiceStub = MonitorAlertServiceGrpc.newStub(channel);
                     monitorAlertServiceBlockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel);
                     animalTrackerServiceStub = AnimalTrackerServiceGrpc.newStub(channel);
+                    rangerCoordinatorServiceStub = RangerCoordinatorServiceGrpc.newStub(channel);
                     latch.countDown(); // service is resolved
                 }
             }
@@ -136,5 +134,11 @@ public class FCSystemClient1 {
                 .build();
                 
         animalTrackerServiceStub.streamAnimalLocations(trackingRequest, responseObserver);
+    }
+    
+    public StreamObserver<RangerCommand> coordinateRangers(StreamObserver<RangerStatus> responseObserver) throws InterruptedException {
+        StreamObserver<RangerCommand> requestObserver = rangerCoordinatorServiceStub.coordinateRangers(responseObserver);
+        Thread.sleep(1000);
+        return requestObserver;
     }
 }
