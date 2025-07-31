@@ -34,11 +34,12 @@ import javax.jmdns.ServiceListener;
 
 /**
  *
- * @author fred
+ * @author Dong
  */
 public class FCSystemClient1 {
     static JmDNS jmdns;
     private static MonitorAlertServiceBlockingStub monitorAlertServiceBlockingStub;
+    private static MonitorAlertServiceStub monitorAlertServiceStub;
     private static CountDownLatch latch = new CountDownLatch(1);
     
     /**
@@ -88,6 +89,7 @@ public class FCSystemClient1 {
                 // check that it is the specific service we want
                 if (serviceName.equals("ForestConservationSystem")) {
                     monitorAlertServiceBlockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel);
+                    monitorAlertServiceStub = MonitorAlertServiceGrpc.newStub(channel);
                     latch.countDown(); // service is resolved
                 }
             }
@@ -105,6 +107,7 @@ public class FCSystemClient1 {
         FCSystemClient1 fcSystemClient = new FCSystemClient1();
         latch.await(); // wait until service is resolved, otherwise all stubs are null
         fcSystemClient.checkFireRisk(19.5f, 71, 410);
+//        fcSystemClient.streamSensorData();
     }
     
     public FireAlert checkFireRisk(float avgTemp, float avgHumi, float avgCo2) {
@@ -117,5 +120,10 @@ public class FCSystemClient1 {
         FireAlert fireAlert = monitorAlertServiceBlockingStub.checkFireRisk(averageData);
         System.out.println("#################### checkFireRisk response: Fire risk level: " + fireAlert.getLevel());
         return fireAlert;
+    }
+    
+    public StreamObserver<SensorReading> streamSensorData(StreamObserver<AverageData> responseObserver) {
+        StreamObserver<SensorReading> requestObserver = monitorAlertServiceStub.streamSensorData(responseObserver);
+        return requestObserver;
     }
 }

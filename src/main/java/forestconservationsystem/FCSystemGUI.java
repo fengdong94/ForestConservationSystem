@@ -5,9 +5,13 @@
 package forestconservationsystem;
 
 import javax.swing.JOptionPane;
-import generated.grpc.monitoralertservice.FireAlert;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import io.grpc.stub.StreamObserver;
+import generated.grpc.monitoralertservice.FireAlert;
+import generated.grpc.monitoralertservice.SensorReading;
+import generated.grpc.monitoralertservice.SensorReading.SensorType;
+import generated.grpc.monitoralertservice.AverageData;
 
 /**
  *
@@ -15,6 +19,7 @@ import java.util.logging.Logger;
  */
 public class FCSystemGUI extends javax.swing.JFrame {
     FCSystemClient1 fcSystemClient;
+    StreamObserver<SensorReading> streamSensorDataRequestObserver;
 
     /**
      * Creates new form FCSystemGUI
@@ -23,6 +28,8 @@ public class FCSystemGUI extends javax.swing.JFrame {
     public FCSystemGUI() throws Exception {
         initComponents();
         fcSystemClient = new FCSystemClient1();
+        sendButton.setVisible(false);
+        getAverageButton.setVisible(false);
     }
 
     /**
@@ -37,19 +44,28 @@ public class FCSystemGUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        MonitorAlertServiceLabel = new javax.swing.JLabel();
+        unaryCheckFireRiskLabel = new javax.swing.JLabel();
+        averageTemperatureLabel = new javax.swing.JLabel();
         avgTempTextField = new javax.swing.JTextField();
         avgHumiTextField = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        averageHumidityLabel = new javax.swing.JLabel();
+        averageCO2Label = new javax.swing.JLabel();
         avgCo2TextField = new javax.swing.JTextField();
         checkFireRiskButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         resultTextArea = new javax.swing.JTextArea();
         jLabel10 = new javax.swing.JLabel();
+        clientStreamingStreamSensorDataLabel = new javax.swing.JLabel();
+        sensorIdLabel = new javax.swing.JLabel();
+        sensorIdTextField = new javax.swing.JTextField();
+        sensorTypeLabel = new javax.swing.JLabel();
+        sensorTypeComboBox = new javax.swing.JComboBox<>();
+        valueLabel = new javax.swing.JLabel();
+        valueTextField = new javax.swing.JTextField();
+        sendButton = new javax.swing.JButton();
+        getAverageButton = new javax.swing.JButton();
+        prepareClientStreamButton = new javax.swing.JButton();
 
         jLabel2.setText("jLabel2");
 
@@ -59,13 +75,11 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("ForestConservationSystem");
+        MonitorAlertServiceLabel.setText("MonitorAlertService");
 
-        jLabel4.setText("AnimalTrackerService");
+        unaryCheckFireRiskLabel.setText("Unary - CheckFireRisk");
 
-        jLabel5.setText("Unary-CheckFireRisk");
-
-        jLabel6.setText("Average Temperature");
+        averageTemperatureLabel.setText("Average Temperature");
 
         avgTempTextField.setText("0");
         avgTempTextField.addActionListener(new java.awt.event.ActionListener() {
@@ -81,12 +95,13 @@ public class FCSystemGUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setText("Average Humidity");
+        averageHumidityLabel.setText("Average Humidity");
 
-        jLabel8.setText("Average CO2");
+        averageCO2Label.setText("Average CO2");
 
         avgCo2TextField.setText("0");
 
+        checkFireRiskButton.setBackground(new java.awt.Color(51, 204, 0));
         checkFireRiskButton.setText("Check Fire Risk");
         checkFireRiskButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -100,57 +115,154 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
         jLabel10.setText("Result");
 
+        clientStreamingStreamSensorDataLabel.setText("Client Streaming - StreamSensorData");
+
+        sensorIdLabel.setText("Sensor ID");
+
+        sensorIdTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sensorIdTextFieldActionPerformed(evt);
+            }
+        });
+
+        sensorTypeLabel.setText("Sensor Type");
+
+        sensorTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TEMPERATURE", "HUMIDITY", "CO2" }));
+        sensorTypeComboBox.setSelectedIndex(0);
+        sensorTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sensorTypeComboBoxActionPerformed(evt);
+            }
+        });
+
+        valueLabel.setText("Value");
+
+        valueTextField.setText("0");
+        valueTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                valueTextFieldActionPerformed(evt);
+            }
+        });
+
+        sendButton.setBackground(new java.awt.Color(51, 204, 255));
+        sendButton.setText("Send");
+        sendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendButtonActionPerformed(evt);
+            }
+        });
+
+        getAverageButton.setBackground(new java.awt.Color(0, 204, 0));
+        getAverageButton.setText("Get Average");
+        getAverageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                getAverageButtonActionPerformed(evt);
+            }
+        });
+
+        prepareClientStreamButton.setBackground(new java.awt.Color(255, 204, 51));
+        prepareClientStreamButton.setText("Prepare Client Stream");
+        prepareClientStreamButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                prepareClientStreamButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(averageCO2Label)
+                            .addComponent(avgCo2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(116, 116, 116))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel4)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(avgTempTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(avgHumiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(avgCo2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(87, 87, 87)
-                                .addComponent(checkFireRiskButton))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(403, 403, 403)
-                        .addComponent(jLabel1)))
-                .addContainerGap(207, Short.MAX_VALUE))
+                            .addComponent(jLabel10)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(unaryCheckFireRiskLabel)
+                                        .addGap(41, 41, 41)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(avgTempTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(averageTemperatureLabel))
+                                        .addGap(53, 53, 53)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(avgHumiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(averageHumidityLabel)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(clientStreamingStreamSensorDataLabel)
+                                            .addComponent(prepareClientStreamButton)
+                                            .addComponent(MonitorAlertServiceLabel))
+                                        .addGap(49, 49, 49)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(sensorIdLabel)
+                                            .addComponent(sensorIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(23, 23, 23)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(sensorTypeLabel)
+                                            .addComponent(sensorTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(8, 8, 8)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(valueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                                        .addComponent(sendButton))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(15, 15, 15)
+                                        .addComponent(valueLabel)
+                                        .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addGap(18, 18, 18)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(checkFireRiskButton)
+                    .addComponent(getAverageButton))
+                .addGap(22, 22, 22))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(avgTempTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(avgHumiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel8)
-                    .addComponent(avgCo2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(checkFireRiskButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 373, Short.MAX_VALUE)
+                .addComponent(MonitorAlertServiceLabel)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(sensorIdLabel)
+                            .addComponent(sensorTypeLabel)
+                            .addComponent(valueLabel)
+                            .addComponent(clientStreamingStreamSensorDataLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(sensorIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sensorTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(valueTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sendButton)
+                            .addComponent(getAverageButton)
+                            .addComponent(prepareClientStreamButton))
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(averageCO2Label)
+                            .addComponent(averageHumidityLabel)
+                            .addComponent(averageTemperatureLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(avgCo2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(checkFireRiskButton)
+                            .addComponent(avgHumiTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(avgTempTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(96, 96, 96)
+                        .addComponent(unaryCheckFireRiskLabel)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 333, Short.MAX_VALUE)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -189,6 +301,74 @@ public class FCSystemGUI extends javax.swing.JFrame {
         FireAlert fireAlert = fcSystemClient.checkFireRisk(avgTemp, avgHumi, avgCo2);
         resultTextArea.setText("Fire risk level: " + fireAlert.getLevel());
     }//GEN-LAST:event_checkFireRiskButtonActionPerformed
+
+    private void sensorTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sensorTypeComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sensorTypeComboBoxActionPerformed
+
+    private void valueTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_valueTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_valueTextFieldActionPerformed
+
+    private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
+        float value = 0;
+        try {
+            value = Float.parseFloat(valueTextField.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "please enter a valid numer for value");
+        }
+        try {
+            String sensorId = sensorIdTextField.getText().trim();
+            String sensorTypeName = (String) sensorTypeComboBox.getSelectedItem();
+            SensorType sensorType = SensorType.valueOf(sensorTypeName);
+            
+            streamSensorDataRequestObserver.onNext(
+                    SensorReading.newBuilder()
+                            .setSensorId(sensorId)
+                            .setType(sensorType)
+                            .setValue(value)
+                            .build()
+            );
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_sendButtonActionPerformed
+
+    private void prepareClientStreamButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prepareClientStreamButtonActionPerformed
+        StreamObserver<AverageData> responseObserver = new StreamObserver<AverageData>() {
+            @Override
+            public void onNext(AverageData averageData) {
+                System.out.println("################### streamSensorData response from server " + averageData.toString());
+                resultTextArea.setText(averageData.toString());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                t.printStackTrace();
+            }
+
+            @Override
+            public void onCompleted() {
+                System.out.println("################## streamSensorData client stream is completed.");
+                sendButton.setVisible(false);
+                getAverageButton.setVisible(false);
+            }
+        };
+        
+        
+        streamSensorDataRequestObserver = fcSystemClient.streamSensorData(responseObserver);
+        resultTextArea.setText("Ready to accept values for streamSensorData service");        
+        sendButton.setVisible(true);
+        getAverageButton.setVisible(true);
+    }//GEN-LAST:event_prepareClientStreamButtonActionPerformed
+
+    private void getAverageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getAverageButtonActionPerformed
+        streamSensorDataRequestObserver.onCompleted();
+    }//GEN-LAST:event_getAverageButtonActionPerformed
+
+    private void sensorIdTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sensorIdTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sensorIdTextFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -230,21 +410,30 @@ public class FCSystemGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel MonitorAlertServiceLabel;
+    private javax.swing.JLabel averageCO2Label;
+    private javax.swing.JLabel averageHumidityLabel;
+    private javax.swing.JLabel averageTemperatureLabel;
     private javax.swing.JTextField avgCo2TextField;
     private javax.swing.JTextField avgHumiTextField;
     private javax.swing.JTextField avgTempTextField;
     private javax.swing.JButton checkFireRiskButton;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel clientStreamingStreamSensorDataLabel;
+    private javax.swing.JButton getAverageButton;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton prepareClientStreamButton;
     private javax.swing.JTextArea resultTextArea;
+    private javax.swing.JButton sendButton;
+    private javax.swing.JLabel sensorIdLabel;
+    private javax.swing.JTextField sensorIdTextField;
+    private javax.swing.JComboBox<String> sensorTypeComboBox;
+    private javax.swing.JLabel sensorTypeLabel;
+    private javax.swing.JLabel unaryCheckFireRiskLabel;
+    private javax.swing.JLabel valueLabel;
+    private javax.swing.JTextField valueTextField;
     // End of variables declaration//GEN-END:variables
 }

@@ -40,38 +40,78 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="averageCO2Label" min="-2" max="-2" attributes="0"/>
+                          <Component id="avgCo2TextField" min="-2" pref="82" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="116" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="avgTempTextField" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="avgHumiTextField" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="avgCo2TextField" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
-                              <Component id="checkFireRiskButton" min="-2" max="-2" attributes="0"/>
-                          </Group>
                           <Component id="jScrollPane1" alignment="0" min="-2" pref="645" max="-2" attributes="0"/>
                           <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="unaryCheckFireRiskLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="avgTempTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                          <Component id="averageTemperatureLabel" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="avgHumiTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                          <Component id="averageHumidityLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="clientStreamingStreamSensorDataLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="prepareClientStreamButton" min="-2" max="-2" attributes="0"/>
+                                          <Component id="MonitorAlertServiceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="sensorIdLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="sensorIdTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="sensorTypeLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="sensorTypeComboBox" min="-2" pref="120" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                      <Component id="valueTextField" min="-2" pref="82" max="-2" attributes="0"/>
+                                      <EmptySpace pref="51" max="32767" attributes="0"/>
+                                      <Component id="sendButton" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                                      <Component id="valueLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
                       </Group>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="403" max="-2" attributes="0"/>
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="207" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="checkFireRiskButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="getAverageButton" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -79,22 +119,45 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="avgTempTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="avgHumiTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="avgCo2TextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="checkFireRiskButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Component id="MonitorAlertServiceLabel" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="sensorIdLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="sensorTypeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="valueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="clientStreamingStreamSensorDataLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="sensorIdTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="sensorTypeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="valueTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="sendButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="getAverageButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="prepareClientStreamButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="averageCO2Label" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="averageHumidityLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="averageTemperatureLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="avgCo2TextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="checkFireRiskButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="avgHumiTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="avgTempTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="96" max="-2" attributes="0"/>
+                      <Component id="unaryCheckFireRiskLabel" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace pref="373" max="32767" attributes="0"/>
+              <EmptySpace pref="333" max="32767" attributes="0"/>
               <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="135" max="-2" attributes="0"/>
@@ -104,22 +167,17 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="MonitorAlertServiceLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="ForestConservationSystem"/>
+        <Property name="text" type="java.lang.String" value="MonitorAlertService"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel4">
+    <Component class="javax.swing.JLabel" name="unaryCheckFireRiskLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="AnimalTrackerService"/>
+        <Property name="text" type="java.lang.String" value="Unary - CheckFireRisk"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel5">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Unary-CheckFireRisk"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel6">
+    <Component class="javax.swing.JLabel" name="averageTemperatureLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Average Temperature"/>
       </Properties>
@@ -140,12 +198,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="avgHumiTextFieldActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel7">
+    <Component class="javax.swing.JLabel" name="averageHumidityLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Average Humidity"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel8">
+    <Component class="javax.swing.JLabel" name="averageCO2Label">
       <Properties>
         <Property name="text" type="java.lang.String" value="Average CO2"/>
       </Properties>
@@ -157,6 +215,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="checkFireRiskButton">
       <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="0" green="cc" red="33" type="rgb"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Check Fire Risk"/>
       </Properties>
       <Events>
@@ -182,6 +243,86 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Result"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="clientStreamingStreamSensorDataLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Client Streaming - StreamSensorData"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="sensorIdLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Sensor ID"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="sensorIdTextField">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sensorIdTextFieldActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="sensorTypeLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Sensor Type"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="sensorTypeComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new javax.swing.DefaultComboBoxModel&lt;&gt;(new String[] { &quot;TEMPERATURE&quot;, &quot;HUMIDITY&quot;, &quot;CO2&quot; })" type="code"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sensorTypeComboBoxActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="sensorTypeComboBox.setSelectedIndex(0);"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="valueLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Value"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="valueTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="valueTextFieldActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="sendButton">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="cc" red="33" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Send"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sendButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="getAverageButton">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="0" green="cc" red="0" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Get Average"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="getAverageButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="prepareClientStreamButton">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="33" green="cc" red="ff" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Prepare Client Stream"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="prepareClientStreamButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
