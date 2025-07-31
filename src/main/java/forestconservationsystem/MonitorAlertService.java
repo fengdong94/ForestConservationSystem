@@ -38,35 +38,35 @@ public class MonitorAlertService extends MonitorAlertServiceImplBase {
             // calculate the average for each SensorType
             @Override
             public void onCompleted() {
-                float sum_temp = 0, sum_humi = 0, sum_co2 = 0;
-                int size_temp = 0, size_humi = 0, size_co2 = 0;
+                float sumTemp = 0, sumHumi = 0, sumCo2 = 0;
+                int sizeTemp = 0, sizeHumi = 0, sizeCo2 = 0;
                 
                 for(SensorReading sensorReading: sensorReadingList) {
                     SensorType type = sensorReading.getType();
                     float value = sensorReading.getValue();
                     
                     if (type == SensorType.TEMPERATURE) {
-                        sum_temp += value;
-                        size_temp += 1;
+                        sumTemp += value;
+                        sizeTemp += 1;
                     }
                     if (type == SensorType.HUMIDITY) {
-                        sum_humi += value;
-                        size_humi += 1;
+                        sumHumi += value;
+                        sizeHumi += 1;
                     }
                     if (type == SensorType.CO2) {
-                        sum_co2 += value;
-                        size_co2 += 1;
+                        sumCo2 += value;
+                        sizeCo2 += 1;
                     }
                 }
                 
-                float avg_temp = sum_temp / size_temp;
-                float avg_humi = sum_humi / size_humi;
-                float avg_co2 = sum_co2 / size_co2;
+                float avgTemp = sumTemp / sizeTemp;
+                float avgHumi = sumHumi / sizeHumi;
+                float avgCo2 = sumCo2 / sizeCo2;
 
                 AverageData averageData = AverageData.newBuilder()
-                        .setAvgTemp(avg_temp)
-                        .setAvgHumi(avg_humi)
-                        .setAvgCo2(avg_co2)
+                        .setAvgTemp(avgTemp)
+                        .setAvgHumi(avgHumi)
+                        .setAvgCo2(avgCo2)
                         .build();
                 
                 responseObserver.onNext(averageData);
