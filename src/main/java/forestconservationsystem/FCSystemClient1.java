@@ -38,8 +38,9 @@ import javax.jmdns.ServiceListener;
  */
 public class FCSystemClient1 {
     static JmDNS jmdns;
-    private static MonitorAlertServiceBlockingStub monitorAlertServiceBlockingStub;
     private static MonitorAlertServiceStub monitorAlertServiceStub;
+    private static MonitorAlertServiceBlockingStub monitorAlertServiceBlockingStub;
+    private static AnimalTrackerServiceStub animalTrackerServiceStub;
     private static CountDownLatch latch = new CountDownLatch(1);
     
     /**
@@ -88,8 +89,9 @@ public class FCSystemClient1 {
                 // now that the service is resolved we can use it
                 // check that it is the specific service we want
                 if (serviceName.equals("ForestConservationSystem")) {
-                    monitorAlertServiceBlockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel);
                     monitorAlertServiceStub = MonitorAlertServiceGrpc.newStub(channel);
+                    monitorAlertServiceBlockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel);
+                    animalTrackerServiceStub = AnimalTrackerServiceGrpc.newStub(channel);
                     latch.countDown(); // service is resolved
                 }
             }
@@ -125,5 +127,14 @@ public class FCSystemClient1 {
     public StreamObserver<SensorReading> streamSensorData(StreamObserver<AverageData> responseObserver) {
         StreamObserver<SensorReading> requestObserver = monitorAlertServiceStub.streamSensorData(responseObserver);
         return requestObserver;
+    }
+    
+    public void streamAnimalLocations(StreamObserver<LocationUpdate> responseObserver, String animalId, int updateInterval) {
+        TrackingRequest trackingRequest = TrackingRequest.newBuilder()
+                .setAnimalId(animalId)
+                .setUpdateInterval(updateInterval)
+                .build();
+                
+        animalTrackerServiceStub.streamAnimalLocations(trackingRequest, responseObserver);
     }
 }

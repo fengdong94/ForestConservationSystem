@@ -20,7 +20,7 @@ import io.grpc.stub.StreamObserver;
  */
 public class AnimalTrackerService extends AnimalTrackerServiceImplBase {
     @Override
-    public void streamAnimalLocations(TrackingRequest request,  StreamObserver<LocationUpdate> responseObserver) {
+    public void streamAnimalLocations(TrackingRequest request, StreamObserver<LocationUpdate> responseObserver) {
         int updateInterval = request.getUpdateInterval();
         Timer timer = new Timer();
         
