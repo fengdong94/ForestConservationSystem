@@ -4,8 +4,10 @@
  */
 package forestconservationsystem;
 
+import java.util.*;
 import generated.grpc.rangercoordinatorservice.RangerCoordinatorServiceGrpc.RangerCoordinatorServiceImplBase;
 import generated.grpc.rangercoordinatorservice.RangerCommand;
+import generated.grpc.rangercoordinatorservice.CommandType;
 import generated.grpc.rangercoordinatorservice.RangerStatus;
 import generated.grpc.rangercoordinatorservice.StatusType;
 import io.grpc.stub.StreamObserver;
@@ -20,17 +22,27 @@ public class RangerCoordinatorService extends RangerCoordinatorServiceImplBase {
         return new StreamObserver<RangerCommand>() {
             @Override
             public void onNext(RangerCommand rangerCommand) {
-                String rangerId = rangerCommand.getRangerId();
-                System.out.println("################### server received coordinateRangers ranger_id: " + rangerId + " action: " + rangerCommand.getAction());
+                System.out.println("################### server received coordinateRangers rangerCommand: " + rangerCommand.toString());
 
-                // TODO different reply, lon lat
+                CommandType action = rangerCommand.getAction();
+                // generate status according to action
+                StatusType status = StatusType.IDLE;
+                if (action.equals(CommandType.MOVE_TO)) {
+                    status = StatusType.MOVING;
+                }
+                if (action.equals(CommandType.SCAN_AREA)) {
+                    status = StatusType.SCANNING;
+                }
+                
+                // generate longitude, latitude nearby the destination longitude and latitude
+                double[] location = generateRandomLocation(rangerCommand.getLon(), rangerCommand.getLat());
+                
                 RangerStatus reply = RangerStatus.newBuilder()
-                        .setRangerId(rangerId)
-                        .setStatus(StatusType.IDLE)
-                        .setLon(172.1221)
-                        .setLat(23.4567)
-//                        .setFindings(0, "POACHER")
-//                        .setFindings(1, "FIRE")
+                        .setRangerId(rangerCommand.getRangerId())
+                        .setStatus(status)
+                        .setLon(location[0])
+                        .setLat(location[1])
+                        .addAllFindings(generateRandomFindings())
                         .build();
 
                 responseObserver.onNext(reply);
@@ -44,11 +56,34 @@ public class RangerCoordinatorService extends RangerCoordinatorServiceImplBase {
             @Override
             public void onCompleted() {
                 System.out.println("######################### receiving coordinateRangers completed ");
-
                 // completed too
                 responseObserver.onCompleted();
             }
-
         };
+    }
+    
+    public static double[] generateRandomLocation(double centerLon, double centerLat) {
+        // generate a random location relatively nearby a center
+        Random rand = new Random();
+        double randomLon = centerLon + rand.nextDouble() / 100;
+        double randomLat = centerLat + rand.nextDouble() / 100;
+        
+        // Round to four decimal places
+        return new double[]{Math.round(randomLon * 10000) / 10000.0, Math.round(randomLat * 10000) / 10000.0};
+    }
+    
+    public static Iterable<String> generateRandomFindings() {
+        Random rand = new Random();
+        // 50% chance to return an empty list
+        if (rand.nextBoolean()) {
+            return List.of();
+        }
+
+        List<String> findings = Arrays.asList("POACHER", "FIRE", "ILLEGAL_LOGGING", "ANIMAL_DISTRESS");
+        // Random number of findings (1 to 4)
+        List<String> shuffled = new ArrayList<>(findings);
+        Collections.shuffle(shuffled);
+        int count = rand.nextInt(4) + 1; // 1 to 4 events
+        return shuffled.subList(0, count);
     }
 }

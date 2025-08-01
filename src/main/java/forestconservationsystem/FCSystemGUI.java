@@ -259,8 +259,13 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
         latitudeLabel.setText("Latitude");
 
-        actionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MOVE_TO", "SCAN_AREA", "RETURN BASE" }));
+        actionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MOVE_TO", "SCAN_AREA", "RETURN_BASE" }));
         actionComboBox.setSelectedIndex(0);
+        actionComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actionComboBoxActionPerformed(evt);
+            }
+        });
 
         coordinateButton.setBackground(new java.awt.Color(51, 204, 255));
         coordinateButton.setText("Coordinate");
@@ -335,9 +340,12 @@ public class FCSystemGUI extends javax.swing.JFrame {
                                             .addComponent(rangerIdLabel))
                                         .addGap(18, 18, 18)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(actionLabel)
-                                            .addComponent(actionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(18, 18, Short.MAX_VALUE)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(actionLabel)
+                                                .addGap(18, 115, Short.MAX_VALUE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(actionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGap(41, 41, 41)))
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(longitudeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(longitudeLabel))
@@ -603,24 +611,42 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
     private void coordinateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coordinateButtonActionPerformed
         String rangerId = rangerIdTextField.getText().trim();
+        if (rangerId.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ranger ID is required");
+            return;
+        }
+        
         String actionName = (String) actionComboBox.getSelectedItem();
         CommandType action = CommandType.valueOf(actionName);
         
-//        TODO
-//        float longitude, latitude;
-//        try {
-//            longitude = Float.parseFloat(longitudeTextField.getText().trim());
-//            latitude = Float.parseFloat(latitudeTextField.getText().trim());
-//        } catch (NumberFormatException e) {
-//            JOptionPane.showMessageDialog(null, "please enter a valid numer for Value");
-//        }
+        double longitude = 0, latitude = 0;
+        try {
+            String longitudeText = longitudeTextField.getText().trim();
+            if (longitudeText.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Longitude is required");
+                return;
+            }
+            longitude = Double.parseDouble(longitudeText);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "please enter valid numer for Longitude");
+        }
+        try {
+            String latitudeText = latitudeTextField.getText().trim();
+            if (latitudeText.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Latitude is required");
+                return;
+            }
+            latitude = Double.parseDouble(latitudeText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "please enter valid numer for Latitude");
+        }
         
         RangerCommand rangerCommand = RangerCommand.newBuilder()
                 .setRangerId(rangerId)
                 .setAction(action)
-//                TODO
-//                .setLon(longitude)
-//                .setLat(latitude)
+                .setLon(longitude)
+                .setLat(latitude)
                 .build();
         
         coordinateRangersRequestObserver.onNext(rangerCommand);
@@ -632,7 +658,7 @@ public class FCSystemGUI extends javax.swing.JFrame {
             int count = 0;
             
             @Override
-            public void onNext(RangerStatus rangerStatus) {
+            public void onNext(RangerStatus rangerStatus) {                
                 resultString.append(rangerStatus.toString());
                 resultString.append("\n");
                 resultTextArea.setText(resultString.toString());
@@ -676,6 +702,10 @@ public class FCSystemGUI extends javax.swing.JFrame {
         coordinateButton.setVisible(false);
         doneButton.setVisible(false);
     }//GEN-LAST:event_doneButtonActionPerformed
+
+    private void actionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_actionComboBoxActionPerformed
 
     /**
      * @param args the command line arguments
