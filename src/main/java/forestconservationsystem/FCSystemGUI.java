@@ -8,11 +8,13 @@ import javax.swing.JOptionPane;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import io.grpc.stub.StreamObserver;
+import io.grpc.*;
 import generated.grpc.monitoralertservice.FireAlert;
 import generated.grpc.monitoralertservice.SensorReading;
 import generated.grpc.monitoralertservice.SensorReading.SensorType;
 import generated.grpc.monitoralertservice.AverageData;
 import generated.grpc.animaltrackerservice.LocationUpdate;
+import generated.grpc.animaltrackerservice.TrackingRequest;
 import generated.grpc.rangercoordinatorservice.RangerCommand;
 import generated.grpc.rangercoordinatorservice.CommandType;
 import generated.grpc.rangercoordinatorservice.RangerStatus;
@@ -24,6 +26,7 @@ public class FCSystemGUI extends javax.swing.JFrame {
     FCSystemClient1 fcSystemClient;
     StreamObserver<SensorReading> streamSensorDataRequestObserver;
     StreamObserver<RangerCommand> coordinateRangersRequestObserver;
+    ClientCall<TrackingRequest, LocationUpdate> call;
 
     /**
      * Creates new form FCSystemGUI
@@ -99,6 +102,7 @@ public class FCSystemGUI extends javax.swing.JFrame {
         actionComboBox = new javax.swing.JComboBox<>();
         coordinateButton = new javax.swing.JButton();
         doneButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         jLabel2.setText("jLabel2");
 
@@ -283,6 +287,14 @@ public class FCSystemGUI extends javax.swing.JFrame {
             }
         });
 
+        cancelButton.setBackground(new java.awt.Color(255, 102, 0));
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -342,7 +354,7 @@ public class FCSystemGUI extends javax.swing.JFrame {
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(actionLabel)
-                                                .addGap(18, 115, Short.MAX_VALUE))
+                                                .addGap(18, 167, Short.MAX_VALUE))
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(actionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addGap(41, 41, 41)))
@@ -367,17 +379,19 @@ public class FCSystemGUI extends javax.swing.JFrame {
                                             .addComponent(updateIntervalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addGap(31, 31, 31)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(coordinateButton)
-                                        .addGap(35, 35, 35)
-                                        .addComponent(doneButton))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(sendButton)
-                                        .addGap(25, 25, 25)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(sendButton)
+                                            .addComponent(cancelButton))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                             .addComponent(checkFireRiskButton)
                                             .addComponent(getAverageButton)
-                                            .addComponent(trackButton))))))
+                                            .addComponent(trackButton)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(coordinateButton)
+                                        .addGap(35, 35, 35)
+                                        .addComponent(doneButton)))))
                         .addGap(22, 22, 22))))
         );
         layout.setVerticalGroup(
@@ -422,7 +436,8 @@ public class FCSystemGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(trackButton)
                     .addComponent(animalIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(updateIntervalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(updateIntervalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton))
                 .addGap(34, 34, 34)
                 .addComponent(rangerCoordinatorServiceLabel)
                 .addGap(18, 18, 18)
@@ -464,17 +479,17 @@ public class FCSystemGUI extends javax.swing.JFrame {
         try {
             avgTemp = Float.parseFloat(avgTempTextField.getText().trim());
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "please enter a valid numer for Average Temperature");
+            JOptionPane.showMessageDialog(null, "please enter a valid number for Average Temperature");
         }
         try {
             avgHumi = Float.parseFloat(avgHumiTextField.getText().trim());
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "please enter a valid numer for Average Humidity");
+            JOptionPane.showMessageDialog(null, "please enter a valid number for Average Humidity");
         }
         try {
             avgCo2 = Float.parseFloat(avgCo2TextField.getText().trim());
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "please enter a valid numer for Average CO2");
+            JOptionPane.showMessageDialog(null, "please enter a valid number for Average CO2");
         }
         
         FireAlert fireAlert = fcSystemClient.checkFireRisk(avgTemp, avgHumi, avgCo2);
@@ -494,7 +509,7 @@ public class FCSystemGUI extends javax.swing.JFrame {
         try {
             value = Float.parseFloat(valueTextField.getText().trim());
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "please enter a valid numer for Value");
+            JOptionPane.showMessageDialog(null, "please enter a valid number for Value");
         }
         try {
             String sensorId = sensorIdTextField.getText().trim();
@@ -562,39 +577,61 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
     private void trackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trackButtonActionPerformed
         String animalId = animalIdTextField.getText().trim();
+        if (animalId.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Animal ID is required");
+            return;
+        }
+        
         int updateInterval = 1;
         try {
             updateInterval = Integer.parseInt(updateIntervalTextField.getText().trim());
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "please enter a valid numer for Update Interval");
+            JOptionPane.showMessageDialog(null, "please enter a valid Integer for Update Interval");
+            return;
         }
         
-        StreamObserver<LocationUpdate> responseObserver = new StreamObserver<LocationUpdate> () {
+        TrackingRequest trackingRequest = TrackingRequest.newBuilder()
+                .setAnimalId(animalId)
+                .setUpdateInterval(updateInterval)
+                .build();
+        
+        call = fcSystemClient.streamAnimalLocations();
+        
+        ClientCall.Listener<LocationUpdate> listener = new ClientCall.Listener<LocationUpdate>() {
             StringBuffer resultString = new StringBuffer();
             int count = 0;
             
             @Override
-            public void onNext(LocationUpdate locationUpdate) {
+            public void onHeaders(Metadata headers) {
+                System.out.println("################### StreamAnimalLocations call Headers: " + headers);
+            }
+
+            @Override
+            public void onMessage(LocationUpdate locationUpdate) {
                 resultString.append(locationUpdate.toString());
                 resultString.append("\n");
                 resultTextArea.setText(resultString.toString());
                 count++;
             }
-
+            
             @Override
-            public void onError(Throwable t) {
-                t.printStackTrace();
-            }
-
-            @Override
-            public void onCompleted() {
-                String ending = "StreamAnimalLocations is completed ... received " + count + " locationUpdates";
-                resultString.append(ending);
+            public void onClose(Status status, Metadata trailers) {
+                resultString.append("StreamAnimalLocations call is closed: ");
+                resultString.append(status);
+                resultString.append("\n");
+                resultString.append(" ... received ");
+                resultString.append(count);
+                resultString.append(" locationUpdates");
                 resultTextArea.setText(resultString.toString());
             }
         };
         
-        fcSystemClient.streamAnimalLocations(responseObserver, animalId, updateInterval);
+        call.start(listener, new Metadata());
+        // request 30 messages at most
+        call.request(30);
+        call.sendMessage(trackingRequest);
+        // should be half closed before close/cancelling
+        call.halfClose();
     }//GEN-LAST:event_trackButtonActionPerformed
 
     private void updateIntervalTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateIntervalTextFieldActionPerformed
@@ -629,7 +666,8 @@ public class FCSystemGUI extends javax.swing.JFrame {
             longitude = Double.parseDouble(longitudeText);
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "please enter valid numer for Longitude");
+            JOptionPane.showMessageDialog(null, "please enter valid number for Longitude");
+            return;
         }
         try {
             String latitudeText = latitudeTextField.getText().trim();
@@ -639,7 +677,8 @@ public class FCSystemGUI extends javax.swing.JFrame {
             }
             latitude = Double.parseDouble(latitudeText);
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "please enter valid numer for Latitude");
+            JOptionPane.showMessageDialog(null, "please enter valid number for Latitude");
+            return;
         }
         
         RangerCommand rangerCommand = RangerCommand.newBuilder()
@@ -707,6 +746,10 @@ public class FCSystemGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_actionComboBoxActionPerformed
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        call.cancel("Client cancelled the call of StreamAnimalLocations", null);
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -760,6 +803,7 @@ public class FCSystemGUI extends javax.swing.JFrame {
     private javax.swing.JTextField avgHumiTextField;
     private javax.swing.JTextField avgTempTextField;
     private javax.swing.JLabel biDiStreamingCoordinateRangersLabel;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JButton checkFireRiskButton;
     private javax.swing.JLabel clientStreamingStreamSensorDataLabel;
     private javax.swing.JButton coordinateButton;

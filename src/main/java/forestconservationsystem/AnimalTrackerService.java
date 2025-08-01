@@ -25,7 +25,6 @@ public class AnimalTrackerService extends AnimalTrackerServiceImplBase {
         Timer timer = new Timer();
         
         TimerTask task = new TimerTask() {
-            int count = 1;
             @Override
             public void run() {
                 // generate longitude, latitude and timestamp for each response
@@ -36,13 +35,6 @@ public class AnimalTrackerService extends AnimalTrackerServiceImplBase {
                         .setTimestamp(generateTimestamp())
                         .build();
                 responseObserver.onNext(locationUpdate);
-                
-                // at most 30 responses, then completed
-                if (count >= 30) {
-                    timer.cancel();
-                    responseObserver.onCompleted();
-                }
-                count++;
             }
         };
         
@@ -59,7 +51,8 @@ public class AnimalTrackerService extends AnimalTrackerServiceImplBase {
         double randomLon = centerLon + rand.nextDouble() / 100;
         double randomLat = centerLat + rand.nextDouble() / 100;
 
-        return new double[]{randomLon, randomLat};
+        // Round to four decimal places
+        return new double[]{Math.round(randomLon * 10000) / 10000.0, Math.round(randomLat * 10000) / 10000.0};
     }
     
     public static String generateTimestamp() {
