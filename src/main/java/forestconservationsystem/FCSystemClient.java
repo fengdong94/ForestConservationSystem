@@ -4,29 +4,23 @@
  */
 package forestconservationsystem;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import generated.grpc.monitoralertservice.MonitorAlertServiceGrpc;
 import generated.grpc.monitoralertservice.MonitorAlertServiceGrpc.MonitorAlertServiceStub;
 import generated.grpc.monitoralertservice.MonitorAlertServiceGrpc.MonitorAlertServiceBlockingStub;
 import generated.grpc.monitoralertservice.SensorReading;
-import generated.grpc.monitoralertservice.SensorReading.SensorType;
 import generated.grpc.monitoralertservice.AverageData;
 import generated.grpc.monitoralertservice.FireAlert;
 import generated.grpc.animaltrackerservice.AnimalTrackerServiceGrpc;
-import generated.grpc.animaltrackerservice.AnimalTrackerServiceGrpc.AnimalTrackerServiceStub;
 import generated.grpc.animaltrackerservice.TrackingRequest;
 import generated.grpc.animaltrackerservice.LocationUpdate;
 import generated.grpc.rangercoordinatorservice.RangerCoordinatorServiceGrpc;
 import generated.grpc.rangercoordinatorservice.RangerCoordinatorServiceGrpc.RangerCoordinatorServiceStub;
 import generated.grpc.rangercoordinatorservice.RangerCommand;
 import generated.grpc.rangercoordinatorservice.RangerStatus;
-import generated.grpc.rangercoordinatorservice.CommandType;
+import io.grpc.*;
 import io.grpc.stub.StreamObserver;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import java.io.IOException;
 import java.net.InetAddress;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
@@ -38,15 +32,18 @@ import javax.jmdns.ServiceListener;
  * @author Dong
  */
 public class FCSystemClient {
-    private static final Logger logger = Logger.getLogger(FCSystemClient.class.getName());
     static JmDNS jmdns;
+    ManagedChannel channel;
+    private static MonitorAlertServiceStub monitorAlertServiceStub;
+    private static MonitorAlertServiceBlockingStub monitorAlertServiceBlockingStub;
+    private static RangerCoordinatorServiceStub rangerCoordinatorServiceStub;
+    private static CountDownLatch latch = new CountDownLatch(1);
     
-    public static void main(String[] args) throws Exception {
-        logger.setLevel(Level.SEVERE);
-        Logger.getLogger("io.grpc.netty").setLevel(Level.SEVERE);
-        Logger.getLogger("io.grpc.netty.shaded").setLevel(Level.SEVERE);
-        Logger.getLogger("javax.jmdns").setLevel(Level.SEVERE);
-        
+    /**
+     * create and listen to JmDNS, set up the channel and the stubs.
+     * @throws java.lang.Exception
+     */
+    public FCSystemClient() throws Exception {
         // TODO change to InetAddress.getLocalHost()
         // jmdns = JmDNS.create(InetAddress.getLocalHost());
         InetAddress localAddr = InetAddress.getByName("192.168.1.18");
@@ -79,176 +76,82 @@ public class FCSystemClient {
                 int discoveredPort = serviceInfo.getPort();
                 String serviceName = serviceInfo.getName();
                 
-                ManagedChannel channel = ManagedChannelBuilder
+                channel = ManagedChannelBuilder
                         .forAddress(discoveredHost, discoveredPort)
                         .usePlaintext()
                         .build();
                 
-                try {
-                    // now that the service is resolved we can use it
-                    // check that it is the specific service we want
-                    if (serviceName.equals("ForestConservationSystem")) {
-                        useMonitorAlertService(channel);
-                        useAnimalTrackerService(channel);
-                        useRangerCoordinatorService(channel);
-                    }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(FCSystemClient.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(FCSystemClient.class.getName()).log(Level.SEVERE, null, ex);
+                // now that the service is resolved we can use it
+                // check that it is the specific service we want
+                if (serviceName.equals("ForestConservationSystem")) {
+                    monitorAlertServiceStub = MonitorAlertServiceGrpc.newStub(channel);
+                    monitorAlertServiceBlockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel);
+                    rangerCoordinatorServiceStub = RangerCoordinatorServiceGrpc.newStub(channel);
+                    latch.countDown(); // service is resolved
                 }
-                
             }
         });
-
-        System.out.println("#######Listening for gRPC services via JmDNS...");
-        Thread.sleep(30000);
     }
     
-    private static void useMonitorAlertService(ManagedChannel channel) throws InterruptedException, IOException {
-        /** Client Streaming
-         * streaming sensor reading data to server and get average data
-         */
-        MonitorAlertServiceStub asyncStub = MonitorAlertServiceGrpc.newStub(channel); // non-blocking stub for client streaming
-        StreamObserver<AverageData> responseObserver = new StreamObserver<AverageData>() {
-            /** TODO
-             * NOTE that in client streaming we expect only one response from the server.So we should see
-             * this message only once. We could add some error handling in here to prevent the client from processing
-             * more than one reply from the server
-             */
-            @Override
-            public void onNext(AverageData averageData) {
-                System.out.println("################### response from server " + averageData.toString());
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                t.printStackTrace();
-            }
-
-            @Override
-            public void onCompleted() {
-                System.out.println("################## MonitorAlertService client stream is completed.");
-            }
-        };
-        StreamObserver<SensorReading> requestObserver = asyncStub.streamSensorData(responseObserver);
-
-        // TEMPERATURE
-        requestObserver.onNext(SensorReading.newBuilder().setSensorId("TEMP-01").setType(SensorType.TEMPERATURE).setValue(19).build());
-        // here the client sleeps for a bit between each request to slow things down so we can see whats happening
-        Thread.sleep(500);
-        requestObserver.onNext(SensorReading.newBuilder().setSensorId("TEMP-02").setType(SensorType.TEMPERATURE).setValue(20).build());
-        Thread.sleep(500);
-
-        // HUMIDITY
-        requestObserver.onNext(SensorReading.newBuilder().setSensorId("HUMI-01").setType(SensorType.HUMIDITY).setValue(70).build());
-        Thread.sleep(500);
-        requestObserver.onNext(SensorReading.newBuilder().setSensorId("HUMI-02").setType(SensorType.HUMIDITY).setValue(72).build());
-        Thread.sleep(500);
-
-        // CO2
-        requestObserver.onNext(SensorReading.newBuilder().setSensorId("CO2-01").setType(SensorType.CO2).setValue(400).build());
-        Thread.sleep(500);
-        requestObserver.onNext(SensorReading.newBuilder().setSensorId("CO2-02").setType(SensorType.CO2).setValue(420).build());
-        Thread.sleep(500);
-
-        requestObserver.onCompleted();
-        // if the client sleeps now then it will see the server response when it wakes
-        Thread.sleep(10000);
-
-        
-        /** Unary
-         * send average data to server and get fire risk level
-         */
-        MonitorAlertServiceBlockingStub blockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel); // blocking stub for unary
-        
+    /**
+     * Use the main method to test that the client calls are working. When using
+     * the GUI we do not need to run the client as a separate process. The GUI
+     * will make an instance of the client and use it.
+     *
+     * @param args
+     */
+    public static void main(String[] args) throws Exception {
+        FCSystemClient fcSystemClient = new FCSystemClient();
+        latch.await(); // wait until service is resolved, otherwise all stubs are null
+        fcSystemClient.checkFireRisk(19.5f, 71, 410);
+//        Now just checkFireRisk is working if you run this client only.
+//        For other helper methods to work, we need to create some StreamObserver and pass in corresponding parameters.
+    }
+    
+    /**
+     * 
+     *
+     * All methods below are helper methods to help GUI connect with services.
+     *
+     * 
+     */
+    
+    // Unary: single request -> single response
+    // rpc CheckFireRisk(AverageData) returns (FireAlert);
+    public FireAlert checkFireRisk(float avgTemp, float avgHumi, float avgCo2) {
         AverageData averageData = AverageData.newBuilder()
-                .setAvgTemp(19.5f)
-                .setAvgHumi(71)
-                .setAvgCo2(410)
+                .setAvgTemp(avgTemp)
+                .setAvgHumi(avgHumi)
+                .setAvgCo2(avgCo2)
                 .build();
 
-        FireAlert fireAlert = blockingStub.checkFireRisk(averageData);
-        System.out.println("############# Fire risk level: " + fireAlert.getLevel());
+        FireAlert fireAlert = monitorAlertServiceBlockingStub.checkFireRisk(averageData);
+        System.out.println("#################### checkFireRisk response: Fire risk level: " + fireAlert.getLevel());
+        return fireAlert;
     }
     
-    private static void useAnimalTrackerService(ManagedChannel channel) throws InterruptedException, IOException {
-        /** Server Streaming
-         * server pushes location updates of a request animal
-         */
-        AnimalTrackerServiceStub asyncStub = AnimalTrackerServiceGrpc.newStub(channel); // non-blocking stub for server streaming
-        TrackingRequest trackingRequest = TrackingRequest.newBuilder()
-                .setAnimalId("TIGER_123")
-                .setUpdateInterval(2)
-                .build();
-
-        ArrayList<LocationUpdate> locationUpdates = new ArrayList<>();
-
-        StreamObserver<LocationUpdate> responseObserver = new StreamObserver<LocationUpdate> () {
-            @Override
-            public void onNext(LocationUpdate locationUpdate) {
-                System.out.println("################## Client received locationUpdates: " + locationUpdate.toString());
-                locationUpdates.add(locationUpdate);
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                System.out.println("#################### Error requesting: " + t.getLocalizedMessage());
-            }
-
-            @Override
-            public void onCompleted() {
-                // TODO ???
-                System.out.println("################## AnimalTrackerService Client received onCompleted");
-            }
-        };
-
-        asyncStub.streamAnimalLocations(trackingRequest, responseObserver);
+    // Client-streaming: Sensors continuously send data
+    // rpc StreamSensorData(stream SensorReading) returns (AverageData);
+    public StreamObserver<SensorReading> streamSensorData(StreamObserver<AverageData> responseObserver) {
+        StreamObserver<SensorReading> requestObserver = monitorAlertServiceStub.streamSensorData(responseObserver);
+        return requestObserver;
     }
     
-    private static void useRangerCoordinatorService(ManagedChannel channel) throws InterruptedException, IOException {
-        /** Bi-directional Streaming
-         * Real-time command/status exchange
-         */
-        
-        RangerCoordinatorServiceStub asyncStub = RangerCoordinatorServiceGrpc.newStub(channel); // non-blocking stub for bi-directional streaming
-        
-        StreamObserver<RangerStatus> responseObserver = new StreamObserver<RangerStatus>() {
-            @Override
-            public void onNext(RangerStatus rangerStatus) {
-                System.out.println("############## client received rangerStatus ranger_id: " + rangerStatus.getRangerId() + " status: " + rangerStatus.getStatus() + " findings: " + rangerStatus.getFindingsList());
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                t.printStackTrace();
-            }
-
-            @Override
-            public void onCompleted() {
-                System.out.println("############# receiving rangerStatus completed ");
-            }
-        };
-        
-        StreamObserver<RangerCommand> requestObserver = asyncStub.coordinateRangers(responseObserver);
-        
-        try {
-            requestObserver.onNext(RangerCommand.newBuilder().setRangerId("RG-11").setAction(CommandType.SCAN_AREA).build());
-            Thread.sleep(500);
-            requestObserver.onNext(RangerCommand.newBuilder().setRangerId("RG-12").setAction(CommandType.SCAN_AREA).build());
-            Thread.sleep(500);
-            requestObserver.onNext(RangerCommand.newBuilder().setRangerId("RG-13").setAction(CommandType.SCAN_AREA).build());
-            Thread.sleep(500);
-            requestObserver.onNext(RangerCommand.newBuilder().setRangerId("RG-14").setAction(CommandType.SCAN_AREA).build());
-            Thread.sleep(500);
-            requestObserver.onCompleted();
-            // if the client sleeps now then it will see the server response when it wakes
-            Thread.sleep(10000);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {			
-            e.printStackTrace();
-        }
-
+    // In this method, use ClientCall to implement Cancelling of messages
+    // Server-streaming: Server pushes location updates
+    // rpc StreamAnimalLocations(TrackingRequest) returns (stream LocationUpdate);
+    public ClientCall<TrackingRequest, LocationUpdate> streamAnimalLocations() {
+        MethodDescriptor<TrackingRequest, LocationUpdate> method = AnimalTrackerServiceGrpc.getStreamAnimalLocationsMethod();
+        // Deadlines 20 seconds
+        CallOptions callOptions = CallOptions.DEFAULT.withDeadlineAfter(20, TimeUnit.SECONDS);
+        ClientCall<TrackingRequest, LocationUpdate> call = channel.newCall(method, callOptions);
+        return call;
+    }
+    
+    // Bidirectional streaming: Real-time command/status exchange
+    // rpc CoordinateRangers(stream RangerCommand) returns (stream RangerStatus);
+    public StreamObserver<RangerCommand> coordinateRangers(StreamObserver<RangerStatus> responseObserver) throws InterruptedException {
+        StreamObserver<RangerCommand> requestObserver = rangerCoordinatorServiceStub.coordinateRangers(responseObserver);
+        return requestObserver;
     }
 }

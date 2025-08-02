@@ -23,7 +23,7 @@ import generated.grpc.rangercoordinatorservice.RangerStatus;
  * @author Dong
  */
 public class FCSystemGUI extends javax.swing.JFrame {
-    FCSystemClient1 fcSystemClient;
+    FCSystemClient fcSystemClient;
     StreamObserver<SensorReading> streamSensorDataRequestObserver;
     StreamObserver<RangerCommand> coordinateRangersRequestObserver;
     ClientCall<TrackingRequest, LocationUpdate> call;
@@ -34,7 +34,7 @@ public class FCSystemGUI extends javax.swing.JFrame {
      */
     public FCSystemGUI() throws Exception {
         initComponents();
-        fcSystemClient = new FCSystemClient1();
+        fcSystemClient = new FCSystemClient();
         sensorIdTextField.setEditable(false);
         sensorTypeComboBox.setEditable(false);
         valueTextField.setEditable(false);
