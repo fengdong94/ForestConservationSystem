@@ -269,17 +269,11 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="avgTempTextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="0"/>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="avgTempTextFieldActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="avgHumiTextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="0"/>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="avgHumiTextFieldActionPerformed"/>
       </Events>
@@ -295,9 +289,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="avgCo2TextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="0"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="checkFireRiskButton">
       <Properties>
@@ -370,9 +361,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="valueTextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="0"/>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="valueTextFieldActionPerformed"/>
       </Events>

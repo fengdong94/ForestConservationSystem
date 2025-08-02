@@ -32,7 +32,7 @@ public class MonitorAlertService extends MonitorAlertServiceImplBase {
 
             @Override
             public void onError(Throwable t) {
-                // TODO Auto-generated method stub
+                t.printStackTrace();
             }
             
             // calculate the average for each SensorType
@@ -59,17 +59,13 @@ public class MonitorAlertService extends MonitorAlertServiceImplBase {
                     }
                 }
                 
-                float avgTemp = sumTemp / sizeTemp;
-                float avgHumi = sumHumi / sizeHumi;
-                float avgCo2 = sumCo2 / sizeCo2;
-
-                AverageData averageData = AverageData.newBuilder()
-                        .setAvgTemp(avgTemp)
-                        .setAvgHumi(avgHumi)
-                        .setAvgCo2(avgCo2)
-                        .build();
+                AverageData.Builder builder = AverageData.newBuilder();
+                // avoid NaN when there is no data input
+                if (sizeTemp != 0) builder.setAvgTemp(sumTemp / sizeTemp);
+                if (sizeHumi != 0) builder.setAvgHumi(sumHumi / sizeHumi);
+                if (sizeCo2  != 0) builder.setAvgCo2(sumCo2 / sizeCo2);
                 
-                responseObserver.onNext(averageData);
+                responseObserver.onNext(builder.build());
                 responseObserver.onCompleted();
             }
         };
@@ -77,11 +73,21 @@ public class MonitorAlertService extends MonitorAlertServiceImplBase {
     
     @Override
     public void checkFireRisk(AverageData averageData, StreamObserver<FireAlert> responseObserver) {
-        // TODO change the riskLevel based averageData
+        RiskLevel riskLevel = RiskLevel.SAFE;
+        float avgTemp = averageData.getAvgTemp();
+        float avgHumi = averageData.getAvgHumi();
+        float avgCo2 = averageData.getAvgCo2();
+        
+        // set riskLevel based on averageData
+        if (avgTemp > 40 || avgHumi < 30 || avgCo2 > 800) {
+            riskLevel = RiskLevel.HIGH;
+        } else if (avgTemp > 35 && avgHumi < 40 && avgCo2 > 700) {
+            riskLevel = RiskLevel.MODERATE;
+        } else if (avgTemp > 30 && avgHumi < 50 && avgCo2 > 600) {
+            riskLevel = RiskLevel.LOW;
+        }
 
-        FireAlert fireAlert = FireAlert.newBuilder()
-                .setLevel(RiskLevel.SAFE)
-                .build();
+        FireAlert fireAlert = FireAlert.newBuilder().setLevel(riskLevel).build();
 
         responseObserver.onNext(fireAlert);
         responseObserver.onCompleted();

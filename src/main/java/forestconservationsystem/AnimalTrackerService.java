@@ -34,7 +34,12 @@ public class AnimalTrackerService extends AnimalTrackerServiceImplBase {
                         .setLat(location[1])
                         .setTimestamp(generateTimestamp())
                         .build();
-                responseObserver.onNext(locationUpdate);
+                
+                try {
+                    responseObserver.onNext(locationUpdate);
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                }
             }
         };
         

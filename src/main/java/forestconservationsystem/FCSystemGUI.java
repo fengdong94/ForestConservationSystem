@@ -119,14 +119,12 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
         averageTemperatureLabel.setText("Average Temperature");
 
-        avgTempTextField.setText("0");
         avgTempTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 avgTempTextFieldActionPerformed(evt);
             }
         });
 
-        avgHumiTextField.setText("0");
         avgHumiTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 avgHumiTextFieldActionPerformed(evt);
@@ -136,8 +134,6 @@ public class FCSystemGUI extends javax.swing.JFrame {
         averageHumidityLabel.setText("Average Humidity");
 
         averageCO2Label.setText("Average CO2");
-
-        avgCo2TextField.setText("0");
 
         checkFireRiskButton.setBackground(new java.awt.Color(51, 204, 0));
         checkFireRiskButton.setText("Check Fire Risk");
@@ -175,7 +171,6 @@ public class FCSystemGUI extends javax.swing.JFrame {
 
         valueLabel.setText("Value");
 
-        valueTextField.setText("0");
         valueTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 valueTextFieldActionPerformed(evt);
@@ -475,21 +470,24 @@ public class FCSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_avgHumiTextFieldActionPerformed
 
     private void checkFireRiskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkFireRiskButtonActionPerformed
-        float avgTemp = 0, avgHumi = 0, avgCo2 = 0;
+        float avgTemp, avgHumi, avgCo2;
         try {
             avgTemp = Float.parseFloat(avgTempTextField.getText().trim());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "please enter a valid number for Average Temperature");
+            return;
         }
         try {
             avgHumi = Float.parseFloat(avgHumiTextField.getText().trim());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "please enter a valid number for Average Humidity");
+            return;
         }
         try {
             avgCo2 = Float.parseFloat(avgCo2TextField.getText().trim());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "please enter a valid number for Average CO2");
+            return;
         }
         
         FireAlert fireAlert = fcSystemClient.checkFireRisk(avgTemp, avgHumi, avgCo2);
@@ -505,17 +503,23 @@ public class FCSystemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_valueTextFieldActionPerformed
 
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
-        float value = 0;
+        String sensorId = sensorIdTextField.getText().trim();
+        if (sensorId.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Sensor ID is required");
+            return;
+        }
+        String sensorTypeName = (String) sensorTypeComboBox.getSelectedItem();
+        SensorType sensorType = SensorType.valueOf(sensorTypeName);
+        
+        float value;
         try {
             value = Float.parseFloat(valueTextField.getText().trim());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "please enter a valid number for Value");
+            return;
         }
+        
         try {
-            String sensorId = sensorIdTextField.getText().trim();
-            String sensorTypeName = (String) sensorTypeComboBox.getSelectedItem();
-            SensorType sensorType = SensorType.valueOf(sensorTypeName);
-            
             streamSensorDataRequestObserver.onNext(
                     SensorReading.newBuilder()
                             .setSensorId(sensorId)
