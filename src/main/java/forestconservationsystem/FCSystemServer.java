@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.ServerInterceptors;
 import java.util.logging.Level;
 
 /**
@@ -32,7 +33,9 @@ public class FCSystemServer {
         try {
             Server server = ServerBuilder.forPort(port)
                     .addService(monitorAlertService)
-                    .addService(animalTrackerService)
+//                    .addService(animalTrackerService)
+                    // to implement Authentication with JWT, we need to add JwtServerInterceptor here to validate token
+                    .addService(ServerInterceptors.intercept(animalTrackerService, new JwtServerInterceptor()))
                     .addService(rangerCoordinatorService)
                     .build()
                     .start();
@@ -42,7 +45,7 @@ public class FCSystemServer {
             
             // register the service to jmDNS 
             ServiceRegistration sr = ServiceRegistration.getInstance();
-            sr.registerService( "_grpc._tcp.local.", "ForestConservationSystem", port, "");
+            sr.registerService(Utils.SERVICE_TYPE, Utils.SERVICE_NAME, port, "");
 
             server.awaitTermination();
         } catch (IOException e) {

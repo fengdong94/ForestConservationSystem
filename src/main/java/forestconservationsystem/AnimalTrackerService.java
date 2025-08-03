@@ -6,13 +6,15 @@ package forestconservationsystem;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Random;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import generated.grpc.animaltrackerservice.AnimalTrackerServiceGrpc.AnimalTrackerServiceImplBase;
 import generated.grpc.animaltrackerservice.TrackingRequest;
 import generated.grpc.animaltrackerservice.LocationUpdate;
 import io.grpc.stub.StreamObserver;
+import io.grpc.Context;
+import io.grpc.Context.CancellationListener;
+import com.google.common.util.concurrent.MoreExecutors;
 
 /**
  *
@@ -27,8 +29,8 @@ public class AnimalTrackerService extends AnimalTrackerServiceImplBase {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                // generate longitude, latitude and timestamp for each response
-                double[] location = generateRandomLocation();
+                // generate a random location relatively nearby a center
+                double[] location = Utils.generateRandomLocation(121.4737, 31.2304);
                 LocationUpdate locationUpdate = LocationUpdate.newBuilder()
                         .setLon(location[0])
                         .setLat(location[1])
@@ -38,6 +40,7 @@ public class AnimalTrackerService extends AnimalTrackerServiceImplBase {
                 try {
                     responseObserver.onNext(locationUpdate);
                 } catch (RuntimeException e) {
+                    timer.cancel();
                     e.printStackTrace();
                 }
             }
@@ -45,19 +48,14 @@ public class AnimalTrackerService extends AnimalTrackerServiceImplBase {
         
         // stream the locationUpdate data every updateInterval seconds
         timer.scheduleAtFixedRate(task, 0, updateInterval * 1000);
-    }
-    
-    public static double[] generateRandomLocation() {
-        // generate a random location relatively nearby a center
-        double centerLon = 121.4737;
-        double centerLat = 31.2304;
         
-        Random rand = new Random();
-        double randomLon = centerLon + rand.nextDouble() / 100;
-        double randomLat = centerLat + rand.nextDouble() / 100;
-
-        // Round to four decimal places
-        return new double[]{Math.round(randomLon * 10000) / 10000.0, Math.round(randomLat * 10000) / 10000.0};
+        // when client cancel calls, cancel the timer
+        Context.current().addListener(new CancellationListener() {
+            @Override
+            public void cancelled(Context context) {
+                timer.cancel();
+            }
+        }, MoreExecutors.directExecutor());
     }
     
     public static String generateTimestamp() {

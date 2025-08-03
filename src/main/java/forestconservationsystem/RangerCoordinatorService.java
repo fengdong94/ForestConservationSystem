@@ -35,7 +35,7 @@ public class RangerCoordinatorService extends RangerCoordinatorServiceImplBase {
                 }
                 
                 // generate longitude, latitude nearby the destination longitude and latitude
-                double[] location = generateRandomLocation(rangerCommand.getLon(), rangerCommand.getLat());
+                double[] location = Utils.generateRandomLocation(rangerCommand.getLon(), rangerCommand.getLat());
                 
                 RangerStatus reply = RangerStatus.newBuilder()
                         .setRangerId(rangerCommand.getRangerId())
@@ -60,16 +60,6 @@ public class RangerCoordinatorService extends RangerCoordinatorServiceImplBase {
                 responseObserver.onCompleted();
             }
         };
-    }
-    
-    public static double[] generateRandomLocation(double centerLon, double centerLat) {
-        // generate a random location relatively nearby a center
-        Random rand = new Random();
-        double randomLon = centerLon + rand.nextDouble() / 100;
-        double randomLat = centerLat + rand.nextDouble() / 100;
-        
-        // Round to four decimal places
-        return new double[]{Math.round(randomLon * 10000) / 10000.0, Math.round(randomLat * 10000) / 10000.0};
     }
     
     public static Iterable<String> generateRandomFindings() {

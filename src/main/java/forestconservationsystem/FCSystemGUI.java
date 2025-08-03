@@ -4,6 +4,8 @@
  */
 package forestconservationsystem;
 
+import java.util.Date;
+import java.security.Key;
 import javax.swing.JOptionPane;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +20,8 @@ import generated.grpc.animaltrackerservice.TrackingRequest;
 import generated.grpc.rangercoordinatorservice.RangerCommand;
 import generated.grpc.rangercoordinatorservice.CommandType;
 import generated.grpc.rangercoordinatorservice.RangerStatus;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 /**
  *
  * @author Dong
@@ -606,8 +610,8 @@ public class FCSystemGUI extends javax.swing.JFrame {
             int count = 0;
             
             @Override
-            public void onHeaders(Metadata headers) {
-                System.out.println("################### StreamAnimalLocations call Headers: " + headers);
+            public void onHeaders(Metadata metaData) {
+                System.out.println("################### StreamAnimalLocations call metaData: " + metaData);
             }
 
             @Override
@@ -630,7 +634,26 @@ public class FCSystemGUI extends javax.swing.JFrame {
             }
         };
         
-        call.start(listener, new Metadata());
+        long nowMillis = System.currentTimeMillis();
+        Date now = new Date(nowMillis);
+        // expire time 2 hours
+        Date exp = new Date(nowMillis + 7200_000);
+        // generate a JWT token
+        Key key = Keys.hmacShaKeyFor(Utils.SECRET_KEY.getBytes());
+        String jwt = Jwts.builder()
+                .setSubject("AnimalTrackerService")
+                .claim("role", "admin")
+                .setIssuedAt(now)
+                .setExpiration(exp)
+                .signWith(key)
+                .compact();
+        
+        Metadata metadata = new Metadata();
+        // add JWT token in metadata
+        // add prefix Bearer to identify it is a token
+        metadata.put(Utils.AUTH_KEY, "Bearer " + jwt);
+        
+        call.start(listener, metadata);
         // request 30 messages at most
         call.request(30);
         call.sendMessage(trackingRequest);

@@ -49,9 +49,8 @@ public class FCSystemClient {
         InetAddress localAddr = InetAddress.getByName("192.168.1.18");
         jmdns = JmDNS.create(localAddr);
         
-        String serviceType = "_grpc._tcp.local.";
         // Add a service listener
-        jmdns.addServiceListener(serviceType, new ServiceListener() {
+        jmdns.addServiceListener(Utils.SERVICE_TYPE, new ServiceListener() {
             @Override
             public void serviceAdded(ServiceEvent event) {
                 System.out.println("[+] Service added: " + event.getName());
@@ -83,7 +82,7 @@ public class FCSystemClient {
                 
                 // now that the service is resolved we can use it
                 // check that it is the specific service we want
-                if (serviceName.equals("ForestConservationSystem")) {
+                if (serviceName.equals(Utils.SERVICE_NAME)) {
                     monitorAlertServiceStub = MonitorAlertServiceGrpc.newStub(channel);
                     monitorAlertServiceBlockingStub = MonitorAlertServiceGrpc.newBlockingStub(channel);
                     rangerCoordinatorServiceStub = RangerCoordinatorServiceGrpc.newStub(channel);
