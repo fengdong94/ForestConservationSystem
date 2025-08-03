@@ -1,0 +1,95 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package forestconservationsystem;
+
+import generated.grpc.monitoralertservice.MonitorAlertServiceGrpc.MonitorAlertServiceImplBase;
+import generated.grpc.monitoralertservice.SensorReading;
+import generated.grpc.monitoralertservice.SensorReading.SensorType;
+import generated.grpc.monitoralertservice.AverageData;
+import generated.grpc.monitoralertservice.FireAlert;
+import generated.grpc.monitoralertservice.FireAlert.RiskLevel;
+import io.grpc.stub.StreamObserver;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author Dong
+ */
+public class MonitorAlertService extends MonitorAlertServiceImplBase {
+    @Override
+    public StreamObserver<SensorReading> streamSensorData (StreamObserver<AverageData> responseObserver) {
+        return new StreamObserver<SensorReading>() {
+            // collect each data that arrives from the client into this arrayList
+            ArrayList<SensorReading> sensorReadingList = new ArrayList();
+
+            // when a new data arrives, put it into the arrayList
+            @Override
+            public void onNext(SensorReading sensorReading) {
+                sensorReadingList.add(sensorReading);           
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                t.printStackTrace();
+            }
+            
+            // calculate the average for each SensorType
+            @Override
+            public void onCompleted() {
+                float sumTemp = 0, sumHumi = 0, sumCo2 = 0;
+                int sizeTemp = 0, sizeHumi = 0, sizeCo2 = 0;
+                
+                for(SensorReading sensorReading: sensorReadingList) {
+                    SensorType type = sensorReading.getType();
+                    float value = sensorReading.getValue();
+                    
+                    if (type == SensorType.TEMPERATURE) {
+                        sumTemp += value;
+                        sizeTemp += 1;
+                    }
+                    if (type == SensorType.HUMIDITY) {
+                        sumHumi += value;
+                        sizeHumi += 1;
+                    }
+                    if (type == SensorType.CO2) {
+                        sumCo2 += value;
+                        sizeCo2 += 1;
+                    }
+                }
+                
+                AverageData.Builder builder = AverageData.newBuilder();
+                // avoid NaN when there is no data input
+                if (sizeTemp != 0) builder.setAvgTemp(sumTemp / sizeTemp);
+                if (sizeHumi != 0) builder.setAvgHumi(sumHumi / sizeHumi);
+                if (sizeCo2  != 0) builder.setAvgCo2(sumCo2 / sizeCo2);
+                
+                responseObserver.onNext(builder.build());
+                responseObserver.onCompleted();
+            }
+        };
+    }
+    
+    @Override
+    public void checkFireRisk(AverageData averageData, StreamObserver<FireAlert> responseObserver) {
+        RiskLevel riskLevel = RiskLevel.SAFE;
+        float avgTemp = averageData.getAvgTemp();
+        float avgHumi = averageData.getAvgHumi();
+        float avgCo2 = averageData.getAvgCo2();
+        
+        // set riskLevel based on averageData
+        if (avgTemp > 40 || avgHumi < 30 || avgCo2 > 800) {
+            riskLevel = RiskLevel.HIGH;
+        } else if (avgTemp > 35 && avgHumi < 40 && avgCo2 > 700) {
+            riskLevel = RiskLevel.MODERATE;
+        } else if (avgTemp > 30 && avgHumi < 50 && avgCo2 > 600) {
+            riskLevel = RiskLevel.LOW;
+        }
+
+        FireAlert fireAlert = FireAlert.newBuilder().setLevel(riskLevel).build();
+
+        responseObserver.onNext(fireAlert);
+        responseObserver.onCompleted();
+    }
+}

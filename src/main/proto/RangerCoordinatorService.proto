@@ -14,8 +14,8 @@ service RangerCoordinatorService {
 message RangerCommand {
     string ranger_id = 1;       // e.g. "RG-12"
     CommandType action = 2;
-    double lon = 3;             // Required for action MOVE_TO
-    double lat = 4;             // Required for action MOVE_TO
+    double lon = 3;             // Destination Longitude
+    double lat = 4;             // Destination Latitude
 }
 
 message RangerStatus {
@@ -33,8 +33,9 @@ enum CommandType {
 }
 
 enum StatusType {
-    IDLE = 0;
-    MOVING = 1;
-    SCANNING = 2;
-    IN_DANGER = 3;
+    NONE = 0;
+    IDLE = 1;
+    MOVING = 2;
+    SCANNING = 3;
+    IN_DANGER = 4;
 }
