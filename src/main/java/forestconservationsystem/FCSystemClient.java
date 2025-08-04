@@ -44,10 +44,10 @@ public class FCSystemClient {
      * @throws java.lang.Exception
      */
     public FCSystemClient() throws Exception {
-        // TODO change to InetAddress.getLocalHost()
-        // jmdns = JmDNS.create(InetAddress.getLocalHost());
-        InetAddress localAddr = InetAddress.getByName("192.168.1.18");
-        jmdns = JmDNS.create(localAddr);
+        jmdns = JmDNS.create(InetAddress.getLocalHost());
+        // for macOS
+//        InetAddress localAddr = InetAddress.getByName("192.168.1.18");
+//        jmdns = JmDNS.create(localAddr);
         
         // Add a service listener
         jmdns.addServiceListener(Utils.SERVICE_TYPE, new ServiceListener() {
