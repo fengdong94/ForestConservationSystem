@@ -21,10 +21,10 @@ public class ServiceRegistration {
 
     // use Singleton pattern
     private ServiceRegistration() throws UnknownHostException, IOException {
-        // TODO change to InetAddress.getLocalHost()
-        // jmdns = JmDNS.create(InetAddress.getLocalHost());
-        InetAddress localAddr = InetAddress.getByName("192.168.1.18");
-        jmdns = JmDNS.create(localAddr);
+        jmdns = JmDNS.create(InetAddress.getLocalHost());
+        // for macOS
+//        InetAddress localAddr = InetAddress.getByName("192.168.1.18");
+//        jmdns = JmDNS.create(localAddr);
         System.out.println("Register: InetAddress.getLocalHost():" + InetAddress.getLocalHost());
     }
 
